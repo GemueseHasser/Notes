@@ -1,5 +1,6 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.listener.NoteClickListener;
 import de.jonas.notes.object.Drawable;
@@ -8,28 +9,33 @@ import de.jonas.notes.object.Note;
 import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public final class OverviewGui extends Gui implements Drawable {
 
+    public static final int CREATE_BUTTON_SIZE = 70;
     @NotNull
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 20);
     @NotNull
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-
-
     @NotNull
     private static final String TITLE = "Notizbücher";
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
     private static final int NOTES_MARGIN_TOP = 40;
+    private static final int CREATE_BUTTON_MARGIN_BOTTOM = 50;
 
 
     @NotNull
@@ -37,16 +43,37 @@ public final class OverviewGui extends Gui implements Drawable {
 
 
     public OverviewGui() {
-        super(TITLE, WIDTH, HEIGHT);
+        super("", WIDTH, HEIGHT);
         this.addDrawable(this);
         this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 
         notesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        notesPanel.setBounds(0, NOTES_MARGIN_TOP, WIDTH, HEIGHT - NOTES_MARGIN_TOP);
 
-        for (@NotNull final Note note : NotesHandler.getNotes()) {
-            addNoteButton(note);
-        }
+        loadNotes();
+
+        final RoundButton createNoteButton = new RoundButton("", 100);
+        createNoteButton.setIcon(new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()));
+        createNoteButton.setFont(TITLE_FONT.deriveFont(15F));
+        createNoteButton.addActionListener(e -> {
+            final String title = (String) JOptionPane.showInputDialog(
+                null,
+                "Welchen Titel soll die Notiz haben?",
+                "Neue Notiz erstellen",
+                JOptionPane.PLAIN_MESSAGE,
+                new ImageIcon(ImageType.CREATE_NOTE_ICON.getImage()),
+                null,
+                null
+            );
+
+            if (title == null || title.isEmpty()) return;
+
+            final Note note = new Note(title, LocalDateTime.now(), new ArrayList<>());
+            NotesHandler.saveNote(note);
+
+            notesPanel.removeAll();
+            loadNotes();
+            notesPanel.revalidate();
+        });
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -57,13 +84,28 @@ public final class OverviewGui extends Gui implements Drawable {
                     0,
                     NOTES_MARGIN_TOP,
                     e.getComponent().getWidth(),
-                    e.getComponent().getHeight() - NOTES_MARGIN_TOP
+                    e.getComponent().getHeight() - NOTES_MARGIN_TOP - OverviewGui.this.getInsets().top
+                );
+
+                createNoteButton.setBounds(
+                    e.getComponent().getWidth() - (int) (CREATE_BUTTON_SIZE * 1.5),
+                    e.getComponent().getHeight() - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
+                    CREATE_BUTTON_SIZE,
+                    CREATE_BUTTON_SIZE
                 );
             }
         });
+
+        this.add(createNoteButton);
         this.add(notesPanel);
     }
 
+
+    public void loadNotes() {
+        for (@NotNull final Note note : NotesHandler.getNotes()) {
+            addNoteButton(note);
+        }
+    }
 
     public void addNoteButton(@NotNull final Note note) {
         final RoundButton button = new RoundButton(
@@ -84,5 +126,6 @@ public final class OverviewGui extends Gui implements Drawable {
             this.getWidth() / 2 - g.getFontMetrics().stringWidth(TITLE) / 2,
             5 + g.getFontMetrics().getAscent()
         );
+        g.drawLine(0, NOTES_MARGIN_TOP - 2, this.getWidth(), NOTES_MARGIN_TOP - 2);
     }
 }
