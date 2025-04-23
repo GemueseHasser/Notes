@@ -10,6 +10,7 @@ import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -47,9 +48,10 @@ public final class OverviewGui extends Gui implements Drawable {
         this.addDrawable(this);
         this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 
-        notesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        final JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(null);
 
-        loadNotes();
+        notesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
         final RoundButton createNoteButton = new RoundButton("", 100);
         createNoteButton.setIcon(new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()));
@@ -76,18 +78,21 @@ public final class OverviewGui extends Gui implements Drawable {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(@NotNull final ComponentEvent e) {
-                super.componentResized(e);
+                final int width = e.getComponent().getWidth();
+                final int height = e.getComponent().getHeight();
+
+                layeredPane.setBounds(0, 0, width, height);
 
                 notesPanel.setBounds(
                     0,
                     NOTES_MARGIN_TOP,
-                    e.getComponent().getWidth(),
-                    e.getComponent().getHeight() - NOTES_MARGIN_TOP - OverviewGui.this.getInsets().top
+                    width,
+                    height - NOTES_MARGIN_TOP - OverviewGui.this.getInsets().top
                 );
 
                 createNoteButton.setBounds(
-                    e.getComponent().getWidth() - (int) (CREATE_BUTTON_SIZE * 1.5),
-                    e.getComponent().getHeight() - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
+                    width - (int) (CREATE_BUTTON_SIZE * 1.5),
+                    height - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
                     CREATE_BUTTON_SIZE,
                     CREATE_BUTTON_SIZE
                 );
@@ -96,8 +101,11 @@ public final class OverviewGui extends Gui implements Drawable {
             }
         });
 
-        this.add(createNoteButton);
-        this.add(notesPanel);
+        loadNotes();
+
+        layeredPane.add(notesPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(createNoteButton, JLayeredPane.PALETTE_LAYER);
+        this.add(layeredPane);
     }
 
 
