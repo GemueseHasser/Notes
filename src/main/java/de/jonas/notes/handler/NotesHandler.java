@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class NotesHandler {
 
@@ -39,7 +40,11 @@ public final class NotesHandler {
             }
         }
 
-        return notes;
+        return notes
+            .stream()
+            .sorted((date1, date2) -> date1.getDateTime().isBefore(date2.getDateTime()) ? 1 :
+                                      date1.getDateTime().equals(date2.getDateTime()) ? 0 : -1
+            ).collect(Collectors.toList());
     }
 
     public static boolean deleteNote(@NotNull final Note note) {
