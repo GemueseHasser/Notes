@@ -3,12 +3,13 @@ package de.jonas.notes.object.gui;
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
+import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
+import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,32 +19,57 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class NoteGui extends Gui {
+public final class NoteGui extends Gui implements Drawable {
 
-    private static final int WIDTH = 400;
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 18);
+    private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 12);
+
+
+    private static final int WIDTH = 500;
     private static final int HEIGHT = 600;
+
+
+    private final JTextArea textArea;
 
 
     public NoteGui(@NotNull final Note note) {
         super(note.getTitle(), WIDTH, HEIGHT);
+        this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
 
         final JTextField titleField = new JTextField(note.getTitle());
-        titleField.setPreferredSize(new Dimension(WIDTH, 30));
+        titleField.setFont(TITLE_FONT);
+        titleField.setBorder(null);
+        titleField.setPreferredSize(new Dimension(WIDTH, 50));
 
-        final JTextArea textArea = new JTextArea();
-        textArea.setPreferredSize(new Dimension(WIDTH, HEIGHT - 30));
+        textArea = new JTextArea();
+        textArea.setFont(TEXT_FONT);
+        textArea.setLineWrap(true);
+        textArea.setBorder(null);
+        textArea.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
+        textArea.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(final FocusEvent e) {
+                super.focusLost(e);
+                repaint();
+            }
+        });
+
         for (@NotNull final String line : note.getLines()) {
             textArea.append(line + "\n");
         }
 
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        final JButton saveButton = new JButton("Speichern");
+        final RoundButton saveButton = new RoundButton("Speichern", 10);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
                 titleField.getText(),
@@ -58,7 +84,7 @@ public final class NoteGui extends Gui {
             this.dispose();
         });
 
-        final JButton deleteButton = new JButton("Löschen");
+        final RoundButton deleteButton = new RoundButton("Löschen", 10);
         deleteButton.addActionListener(e -> {
             final int delete = JOptionPane.showConfirmDialog(
                 null,
@@ -86,4 +112,10 @@ public final class NoteGui extends Gui {
         this.pack();
     }
 
+    @Override
+    public void draw(final @NotNull Graphics2D g) {
+        if (!textArea.getText().isEmpty()) return;
+
+        g.drawString("Notizen hinzufügen...", 5, textArea.getY() + g.getFontMetrics().getAscent());
+    }
 }
