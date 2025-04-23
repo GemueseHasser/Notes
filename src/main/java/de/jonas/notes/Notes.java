@@ -1,6 +1,7 @@
 package de.jonas.notes;
 
 import de.jonas.notes.object.gui.OverviewGui;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -16,10 +17,14 @@ public class Notes {
     //</editor-fold>
 
 
+    @Getter
+    private static OverviewGui overviewGui;
+
+
     public static void main(@NotNull final String @NotNull [] args) throws IOException {
         Files.createDirectories(NOTES_FOLDER.toPath());
 
-        final OverviewGui overviewGui = new OverviewGui();
+        overviewGui = new OverviewGui();
         overviewGui.open();
     }
 

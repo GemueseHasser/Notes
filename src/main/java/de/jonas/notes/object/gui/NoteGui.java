@@ -1,14 +1,26 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
+import de.jonas.notes.constant.ImageType;
+import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class NoteGui extends Gui {
 
@@ -30,8 +42,47 @@ public final class NoteGui extends Gui {
             textArea.append(line + "\n");
         }
 
+        final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        final JButton saveButton = new JButton("Speichern");
+        saveButton.addActionListener(e -> {
+            final Note newNote = new Note(
+                titleField.getText(),
+                LocalDateTime.now(),
+                new ArrayList<>(Arrays.asList(textArea.getText().split("\n")))
+            );
+
+            NotesHandler.saveNote(newNote);
+            NotesHandler.deleteNote(note);
+            Notes.getOverviewGui().reloadNotes();
+
+            this.dispose();
+        });
+
+        final JButton deleteButton = new JButton("Löschen");
+        deleteButton.addActionListener(e -> {
+            final int delete = JOptionPane.showConfirmDialog(
+                null,
+                "Möchtest du diese Notiz wirklich löschen?",
+                "Notiz löschen",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                new ImageIcon(ImageType.DELETE_NOTE_ICON.getImage())
+            );
+
+            if (delete == JOptionPane.NO_OPTION) return;
+
+            if (NotesHandler.deleteNote(note)) {
+                Notes.getOverviewGui().reloadNotes();
+            }
+
+            this.dispose();
+        });
+        panel.add(saveButton);
+        panel.add(deleteButton);
+
         this.add(textArea, BorderLayout.CENTER);
         this.add(titleField, BorderLayout.NORTH);
+        this.add(panel, BorderLayout.SOUTH);
         this.pack();
     }
 

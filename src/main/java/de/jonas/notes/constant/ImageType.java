@@ -25,7 +25,9 @@ public enum ImageType {
     /** Der Typ für das Icon des Buttons, um Notizen hinzuzufügen. */
     ADD_NOTE_ICON("addButton.png", OverviewGui.CREATE_BUTTON_SIZE, OverviewGui.CREATE_BUTTON_SIZE),
     /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine neue Notiz erstellt. */
-    CREATE_NOTE_ICON("createNote.png", 100, 150);
+    CREATE_NOTE_ICON("createNote.png", 100, 150),
+    /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine Notiz löschen möchte. */
+    DELETE_NOTE_ICON("deleteNote.png", 100, 150),;
     //</editor-fold>
 
 

@@ -70,9 +70,7 @@ public final class OverviewGui extends Gui implements Drawable {
             final Note note = new Note(title, LocalDateTime.now(), new ArrayList<>());
             NotesHandler.saveNote(note);
 
-            notesPanel.removeAll();
-            loadNotes();
-            notesPanel.revalidate();
+            reloadNotes();
         });
 
         this.addComponentListener(new ComponentAdapter() {
@@ -100,6 +98,13 @@ public final class OverviewGui extends Gui implements Drawable {
         this.add(notesPanel);
     }
 
+
+    public void reloadNotes() {
+        notesPanel.removeAll();
+        loadNotes();
+        notesPanel.revalidate();
+        repaint();
+    }
 
     public void loadNotes() {
         for (@NotNull final Note note : NotesHandler.getNotes()) {

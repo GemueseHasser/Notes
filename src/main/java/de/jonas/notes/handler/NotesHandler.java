@@ -42,21 +42,11 @@ public final class NotesHandler {
         return notes;
     }
 
-    @Nullable
-    public static Note getNote(@NotNull final String dateTime) {
-        try {
-            final File noteFile = getNoteFile(getDateTime(dateTime));
+    public static boolean deleteNote(@NotNull final Note note) {
+        final File noteFile = getNoteFile(note.getDateTime());
+        if (!noteFile.exists()) return false;
 
-            if (noteFile == null) return null;
-
-            final List<String> lines = Files.readAllLines(noteFile.toPath());
-            final String title = lines.get(0);
-            final List<String> noteLines = lines.subList(2, lines.size());
-
-            return new Note(title, getDateTime(dateTime), noteLines);
-        } catch (@NotNull final IOException e) {
-            throw new RuntimeException(e);
-        }
+        return noteFile.delete();
     }
 
     public static void saveNote(@NotNull final Note note) {
