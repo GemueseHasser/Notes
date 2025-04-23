@@ -91,6 +91,8 @@ public final class OverviewGui extends Gui implements Drawable {
                     CREATE_BUTTON_SIZE,
                     CREATE_BUTTON_SIZE
                 );
+
+                OverviewGui.this.revalidate();
             }
         });
 
