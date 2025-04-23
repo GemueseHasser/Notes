@@ -1,6 +1,7 @@
 package de.jonas.notes.listener;
 
 import de.jonas.notes.object.Note;
+import de.jonas.notes.object.gui.NoteGui;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,6 @@ public final class NoteClickListener implements ActionListener {
 
     @Override
     public void actionPerformed(@NotNull final ActionEvent e) {
-
+        new NoteGui(note).open();
     }
 }

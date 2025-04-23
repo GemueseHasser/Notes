@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -18,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 
 public final class OverviewGui extends Gui implements Drawable {
 
+    @NotNull
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 20);
     @NotNull
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
@@ -64,7 +67,7 @@ public final class OverviewGui extends Gui implements Drawable {
 
     public void addNoteButton(@NotNull final Note note) {
         final RoundButton button = new RoundButton(
-            "<html>" + note.getTitle() + "<br>" + FORMATTER.format(note.getDateTime()),
+            "<html>" + note.getTitle() + "<br><br>" + FORMATTER.format(note.getDateTime()),
             30
         );
         button.setPreferredSize(new Dimension(150, 150));
@@ -75,6 +78,7 @@ public final class OverviewGui extends Gui implements Drawable {
 
     @Override
     public void draw(@NotNull final Graphics2D g) {
+        g.setFont(TITLE_FONT);
         g.drawString(
             TITLE,
             this.getWidth() / 2 - g.getFontMetrics().stringWidth(TITLE) / 2,
