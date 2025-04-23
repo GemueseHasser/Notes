@@ -68,6 +68,8 @@ public class Gui extends JFrame {
             width,
             height
         );
+
+        super.add(draw);
     }
     //</editor-fold>
 
@@ -86,7 +88,6 @@ public class Gui extends JFrame {
      * Diese Methode sollte nach der Erstellung des Fensters aufgerufen werden.
      */
     public void open() {
-        super.add(draw);
         super.setVisible(true);
     }
 

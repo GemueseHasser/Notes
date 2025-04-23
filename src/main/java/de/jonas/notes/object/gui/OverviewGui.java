@@ -122,7 +122,6 @@ public final class OverviewGui extends Gui implements Drawable {
         notesPanel.add(button);
     }
 
-
     @Override
     public void draw(@NotNull final Graphics2D g) {
         g.setFont(TITLE_FONT);
@@ -132,5 +131,14 @@ public final class OverviewGui extends Gui implements Drawable {
             5 + g.getFontMetrics().getAscent()
         );
         g.drawLine(0, NOTES_MARGIN_TOP - 2, this.getWidth(), NOTES_MARGIN_TOP - 2);
+
+        if (notesPanel.getComponentCount() > 0) return;
+
+        final String text = "Du hast noch keine Notizen erstellt.";
+        g.drawString(
+            text,
+            WIDTH / 2 - g.getFontMetrics().stringWidth(text) / 2,
+            HEIGHT / 2 - g.getFontMetrics().getAscent()
+        );
     }
 }
