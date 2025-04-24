@@ -3,30 +3,35 @@ package de.jonas.notes.object.gui;
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
+import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
 import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ImageIcon;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
-public final class NoteGui extends Gui {
+public final class NoteGui extends Gui implements Drawable {
 
+    @NotNull
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 18);
+    @NotNull
     private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 12);
 
 
@@ -34,11 +39,13 @@ public final class NoteGui extends Gui {
     private static final int HEIGHT = 600;
 
 
-    private final JEditorPane editorPane;
+    @NotNull
+    private final JTextArea textArea = new JTextArea();
 
 
     public NoteGui(@NotNull final Note note) {
         super(note.getTitle(), WIDTH, HEIGHT);
+        this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
 
@@ -47,18 +54,11 @@ public final class NoteGui extends Gui {
         titleField.setBorder(null);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
 
-        final StringBuilder initialText = new StringBuilder();
-
-        for (@NotNull final String line : note.getLines()) {
-            initialText.append(line);
-        }
-
-        editorPane = new JEditorPane("text/html", initialText.toString());
-        editorPane.setContentType("text/html");
-        editorPane.setFont(TEXT_FONT);
-        editorPane.setBorder(null);
-        editorPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
-        editorPane.addFocusListener(new FocusAdapter() {
+        textArea.setFont(TEXT_FONT);
+        textArea.setLineWrap(true);
+        textArea.setBorder(null);
+        textArea.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
+        textArea.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(final FocusEvent e) {
                 super.focusLost(e);
@@ -66,13 +66,17 @@ public final class NoteGui extends Gui {
             }
         });
 
+        for (@NotNull final String line : note.getLines()) {
+            textArea.append(line + "\n");
+        }
+
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         final RoundButton saveButton = new RoundButton("Speichern", 10);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
                 titleField.getText(),
                 LocalDateTime.now(),
-                new ArrayList<>(Collections.singleton(editorPane.getText()))
+                new ArrayList<>(Arrays.asList(textArea.getText().split("\n")))
             );
 
             NotesHandler.saveNote(newNote);
@@ -104,9 +108,16 @@ public final class NoteGui extends Gui {
         panel.add(saveButton);
         panel.add(deleteButton);
 
-        this.add(editorPane, BorderLayout.CENTER);
+        this.add(textArea, BorderLayout.CENTER);
         this.add(titleField, BorderLayout.NORTH);
         this.add(panel, BorderLayout.SOUTH);
         this.pack();
+    }
+
+    @Override
+    public void draw(final @NotNull Graphics2D g) {
+        if (!textArea.getText().isEmpty()) return;
+
+        g.drawString("Notizen hinzufügen...", 5, textArea.getY() + g.getFontMetrics().getAscent());
     }
 }
