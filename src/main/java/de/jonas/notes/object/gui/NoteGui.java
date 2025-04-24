@@ -80,12 +80,12 @@ public final class NoteGui extends Gui implements Drawable {
 
         // format text
         for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
-            final TextStyleType style = styleEntry.getKey();
+            final TextStyleType styleType = styleEntry.getKey();
 
             for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
                 final StyledDocument document = textPane.getStyledDocument();
-                final Style documentStyle = document.addStyle(style.name() + styleInformation.getStartPosition(), null);
-                style.setStyle(documentStyle);
+                final Style documentStyle = document.addStyle(styleType.name() + styleInformation.getStartPosition(), null);
+                styleType.setStyle(documentStyle);
 
                 final String styled = textPane.getText().substring(
                     styleInformation.getStartPosition(),
@@ -137,6 +137,7 @@ public final class NoteGui extends Gui implements Drawable {
 
         for (@NotNull final TextStyleType style : TextStyleType.values()) {
             final JToggleButton toggleButton = new JToggleButton(style.getStyledTextAction());
+            toggleButton.setText(style.getText());
             toggleButton.addActionListener(e -> {
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 

@@ -10,17 +10,23 @@ import javax.swing.text.StyledEditorKit;
 @Getter
 public enum TextStyleType {
 
-    BOLD(new StyledEditorKit.BoldAction()),
-    ITALIC(new StyledEditorKit.ItalicAction()),
-    UNDERLINE(new StyledEditorKit.UnderlineAction());
+    BOLD(new StyledEditorKit.BoldAction(), "Fett"),
+    ITALIC(new StyledEditorKit.ItalicAction(), "Kursiv"),
+    UNDERLINE(new StyledEditorKit.UnderlineAction(), "Unterstrichen");
 
 
     @NotNull
     private final StyledEditorKit.StyledTextAction styledTextAction;
+    @NotNull
+    private final String text;
 
 
-    TextStyleType(@NotNull final StyledEditorKit.StyledTextAction styledTextAction) {
+    TextStyleType(
+        @NotNull final StyledEditorKit.StyledTextAction styledTextAction,
+        @NotNull final String text
+    ) {
         this.styledTextAction = styledTextAction;
+        this.text = text;
     }
 
 
