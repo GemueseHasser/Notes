@@ -57,6 +57,11 @@ public final class TextStyleHandler {
         final File styleFile = new File(
             Notes.NOTES_FOLDER + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
         );
+        try {
+            if (styleFile.createNewFile()) return;
+        } catch (@NotNull final IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             for (@NotNull final String line : Files.readAllLines(styleFile.toPath())) {
