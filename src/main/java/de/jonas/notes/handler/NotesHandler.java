@@ -34,7 +34,9 @@ public final class NotesHandler {
                 final LocalDateTime dateTime = LocalDateTime.parse(lines.get(1), FORMATTER);
                 final List<String> noteLines = lines.subList(2, lines.size());
 
-                notes.add(new Note(title, dateTime, noteLines));
+                final Note note = new Note(title, dateTime, noteLines);
+                TextStyleHandler.loadTextStyle(note);
+                notes.add(note);
             } catch (@NotNull final IOException e) {
                 throw new RuntimeException(e);
             }
@@ -43,13 +45,13 @@ public final class NotesHandler {
         return notes
             .stream()
             .sorted((date1, date2) -> date1.getDateTime().isBefore(date2.getDateTime()) ? 1 :
-                                      date1.getDateTime().equals(date2.getDateTime()) ? 0 : -1
+                date1.getDateTime().equals(date2.getDateTime()) ? 0 : -1
             ).collect(Collectors.toList());
     }
 
     public static boolean deleteNote(@NotNull final Note note) {
         final File noteFile = getNoteFile(note.getDateTime());
-        if (!noteFile.exists()) return false;
+        if (!noteFile.exists()) return true;
 
         return noteFile.delete();
     }

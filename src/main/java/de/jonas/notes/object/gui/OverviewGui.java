@@ -2,6 +2,7 @@ package de.jonas.notes.object.gui;
 
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
+import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.NoteClickListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
@@ -71,6 +72,7 @@ public final class OverviewGui extends Gui implements Drawable {
 
             final Note note = new Note(title, LocalDateTime.now(), new ArrayList<>());
             NotesHandler.saveNote(note);
+            TextStyleHandler.saveTextStyle(note, note.getTextStyleInformation());
 
             reloadNotes();
         });

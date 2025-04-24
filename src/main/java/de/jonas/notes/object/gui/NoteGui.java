@@ -2,10 +2,13 @@ package de.jonas.notes.object.gui;
 
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
+import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.NotesHandler;
+import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
+import de.jonas.notes.object.TextStyleInformation;
 import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -26,6 +30,7 @@ import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public final class NoteGui extends Gui implements Drawable {
 
@@ -40,7 +45,7 @@ public final class NoteGui extends Gui implements Drawable {
 
 
     @NotNull
-    private final JTextArea textArea = new JTextArea();
+    private final JTextPane textPane = new JTextPane();
 
 
     public NoteGui(@NotNull final Note note) {
@@ -54,11 +59,10 @@ public final class NoteGui extends Gui implements Drawable {
         titleField.setBorder(null);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
 
-        textArea.setFont(TEXT_FONT);
-        textArea.setLineWrap(true);
-        textArea.setBorder(null);
-        textArea.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
-        textArea.addFocusListener(new FocusAdapter() {
+        textPane.setFont(TEXT_FONT);
+        textPane.setBorder(null);
+        textPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
+        textPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(final FocusEvent e) {
                 super.focusLost(e);
@@ -67,7 +71,7 @@ public final class NoteGui extends Gui implements Drawable {
         });
 
         for (@NotNull final String line : note.getLines()) {
-            textArea.append(line + "\n");
+            textPane.setText(textPane.getText() + line + "\n");
         }
 
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
@@ -76,11 +80,13 @@ public final class NoteGui extends Gui implements Drawable {
             final Note newNote = new Note(
                 titleField.getText(),
                 LocalDateTime.now(),
-                new ArrayList<>(Arrays.asList(textArea.getText().split("\n")))
+                new ArrayList<>(Arrays.asList(textPane.getText().split("\n")))
             );
 
             NotesHandler.saveNote(newNote);
+            TextStyleHandler.saveTextStyle(newNote, note.getTextStyleInformation());
             NotesHandler.deleteNote(note);
+            TextStyleHandler.deleteTextStyle(note);
             Notes.getOverviewGui().reloadNotes();
 
             this.dispose();
@@ -105,10 +111,31 @@ public final class NoteGui extends Gui implements Drawable {
 
             this.dispose();
         });
+
+        for (@NotNull final TextStyleType style : TextStyleType.values()) {
+            final JToggleButton toggleButton = new JToggleButton(style.getStyledTextAction());
+            toggleButton.addActionListener(e -> {
+                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
+
+                if (toggleButton.isSelected()) {
+                    if (!textStyleInformation.getStyles().containsKey(style)) {
+                        textStyleInformation.getStyles().put(style, new LinkedList<>());
+                    }
+
+                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
+                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
+                    return;
+                }
+
+                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
+            });
+            panel.add(toggleButton);
+        }
+
         panel.add(saveButton);
         panel.add(deleteButton);
 
-        this.add(textArea, BorderLayout.CENTER);
+        this.add(textPane, BorderLayout.CENTER);
         this.add(titleField, BorderLayout.NORTH);
         this.add(panel, BorderLayout.SOUTH);
         this.pack();
@@ -116,8 +143,8 @@ public final class NoteGui extends Gui implements Drawable {
 
     @Override
     public void draw(final @NotNull Graphics2D g) {
-        if (!textArea.getText().isEmpty()) return;
+        if (!textPane.getText().isEmpty()) return;
 
-        g.drawString("Notizen hinzufügen...", 5, textArea.getY() + g.getFontMetrics().getAscent());
+        g.drawString("Notizen hinzufügen...", 5, textPane.getY() + g.getFontMetrics().getAscent());
     }
 }

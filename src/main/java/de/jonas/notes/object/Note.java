@@ -17,5 +17,7 @@ public final class Note {
     private final LocalDateTime dateTime;
     @NotNull
     private final List<String> lines;
+    @NotNull
+    private final TextStyleInformation textStyleInformation = new TextStyleInformation();
 
 }
