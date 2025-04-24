@@ -151,6 +151,7 @@ public final class NoteGui extends Gui implements Drawable {
                 Notes.getOverviewGui().reloadNotes();
             }
 
+            TextStyleHandler.deleteTextStyle(note);
             this.dispose();
         });
 
