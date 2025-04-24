@@ -42,9 +42,9 @@ import java.util.Map;
 public final class NoteGui extends Gui implements Drawable {
 
     @NotNull
-    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 18);
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 22);
     @NotNull
-    private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 12);
+    private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final int WIDTH = 500;
     private static final int HEIGHT = 600;
 
@@ -192,6 +192,7 @@ public final class NoteGui extends Gui implements Drawable {
     public void draw(final @NotNull Graphics2D g) {
         if (!textPane.getText().isEmpty()) return;
 
+        g.setFont(TEXT_FONT);
         g.drawString("Notizen hinzufügen...", 7, scrollTextPane.getY() + g.getFontMetrics().getAscent());
     }
 }
