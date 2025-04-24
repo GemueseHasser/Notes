@@ -27,12 +27,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public final class NoteGui extends Gui implements Drawable {
@@ -47,6 +50,8 @@ public final class NoteGui extends Gui implements Drawable {
     private static final int HEIGHT = 600;
 
 
+    @NotNull
+    private final List<JToggleButton> styleButtons = new ArrayList<>();
     @NotNull
     private final JTextPane textPane = new JTextPane();
 
@@ -106,6 +111,20 @@ public final class NoteGui extends Gui implements Drawable {
                 new ArrayList<>(Arrays.asList(textPane.getText().split("\n")))
             );
 
+            // imitate button unselect
+            for (@NotNull final JToggleButton styleButton : styleButtons) {
+                if (!styleButton.isSelected()) continue;
+                styleButton.setSelected(false);
+
+                for (@NotNull final ActionListener actionListener : styleButton.getActionListeners()) {
+                    actionListener.actionPerformed(new ActionEvent(
+                        styleButton,
+                        ActionEvent.ACTION_PERFORMED,
+                        "close all style attributes"
+                    ));
+                }
+            }
+
             NotesHandler.saveNote(newNote);
             TextStyleHandler.saveTextStyle(newNote, note.getTextStyleInformation());
             NotesHandler.deleteNote(note);
@@ -138,6 +157,7 @@ public final class NoteGui extends Gui implements Drawable {
         for (@NotNull final TextStyleType style : TextStyleType.values()) {
             final JToggleButton toggleButton = new JToggleButton(style.getStyledTextAction());
             toggleButton.setText(style.getText());
+            toggleButton.setFocusable(false);
             toggleButton.addActionListener(e -> {
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 
@@ -153,6 +173,7 @@ public final class NoteGui extends Gui implements Drawable {
 
                 textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
             });
+            styleButtons.add(toggleButton);
             panel.add(toggleButton);
         }
 
