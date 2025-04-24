@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
@@ -44,8 +45,6 @@ public final class NoteGui extends Gui implements Drawable {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 18);
     @NotNull
     private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 12);
-
-
     private static final int WIDTH = 500;
     private static final int HEIGHT = 600;
 
@@ -54,6 +53,8 @@ public final class NoteGui extends Gui implements Drawable {
     private final List<JToggleButton> styleButtons = new ArrayList<>();
     @NotNull
     private final JTextPane textPane = new JTextPane();
+    @NotNull
+    private final JScrollPane scrollTextPane = new JScrollPane(textPane);
 
 
     public NoteGui(@NotNull final Note note) throws BadLocationException {
@@ -181,7 +182,7 @@ public final class NoteGui extends Gui implements Drawable {
         panel.add(saveButton);
         panel.add(deleteButton);
 
-        this.add(textPane, BorderLayout.CENTER);
+        this.add(scrollTextPane, BorderLayout.CENTER);
         this.add(titleField, BorderLayout.NORTH);
         this.add(panel, BorderLayout.SOUTH);
         this.pack();
@@ -191,6 +192,6 @@ public final class NoteGui extends Gui implements Drawable {
     public void draw(final @NotNull Graphics2D g) {
         if (!textPane.getText().isEmpty()) return;
 
-        g.drawString("Notizen hinzufügen...", 5, textPane.getY() + g.getFontMetrics().getAscent());
+        g.drawString("Notizen hinzufügen...", 7, scrollTextPane.getY() + g.getFontMetrics().getAscent());
     }
 }
