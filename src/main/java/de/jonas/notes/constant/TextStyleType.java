@@ -3,6 +3,8 @@ package de.jonas.notes.constant;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 
 @Getter
@@ -17,5 +19,14 @@ public enum TextStyleType {
 
     TextStyleType(@NotNull final StyledEditorKit.StyledTextAction styledTextAction) {
         this.styledTextAction = styledTextAction;
+    }
+
+
+    public void setStyle(@NotNull final Style style) {
+        switch (this) {
+            case BOLD:
+                StyleConstants.setBold(style, true);
+                break;
+        }
     }
 }

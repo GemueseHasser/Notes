@@ -43,6 +43,8 @@ public final class TextStyleHandler {
                     final int startPosition = styleInformation.getStartPosition();
                     final int endPosition = styleInformation.getEndPosition();
 
+                    if (startPosition > endPosition) continue;
+
                     writer.write(styleName + ":" + startPosition + ":" + endPosition + "\n");
                 }
             }

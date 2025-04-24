@@ -19,7 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
-
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -31,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Map;
 
 public final class NoteGui extends Gui implements Drawable {
 
@@ -48,7 +51,7 @@ public final class NoteGui extends Gui implements Drawable {
     private final JTextPane textPane = new JTextPane();
 
 
-    public NoteGui(@NotNull final Note note) {
+    public NoteGui(@NotNull final Note note) throws BadLocationException {
         super(note.getTitle(), WIDTH, HEIGHT);
         this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -70,8 +73,28 @@ public final class NoteGui extends Gui implements Drawable {
             }
         });
 
+        // load plain text
         for (@NotNull final String line : note.getLines()) {
             textPane.setText(textPane.getText() + line + "\n");
+        }
+
+        // format text
+        for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
+            final TextStyleType style = styleEntry.getKey();
+
+            for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
+                final StyledDocument document = textPane.getStyledDocument();
+                final Style documentStyle = document.addStyle(style.name() + styleInformation.getStartPosition(), null);
+                style.setStyle(documentStyle);
+
+                final String styled = textPane.getText().substring(
+                    styleInformation.getStartPosition(),
+                    styleInformation.getEndPosition()
+                );
+
+                document.remove(styleInformation.getStartPosition(), styled.length());
+                document.insertString(styleInformation.getStartPosition(), styled, documentStyle);
+            }
         }
 
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
@@ -123,11 +146,11 @@ public final class NoteGui extends Gui implements Drawable {
                     }
 
                     textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
-                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
+                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition() + 1);
                     return;
                 }
 
-                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
+                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition() + 1);
             });
             panel.add(toggleButton);
         }

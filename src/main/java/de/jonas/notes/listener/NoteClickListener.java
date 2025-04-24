@@ -5,6 +5,7 @@ import de.jonas.notes.object.gui.NoteGui;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.text.BadLocationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +18,10 @@ public final class NoteClickListener implements ActionListener {
 
     @Override
     public void actionPerformed(@NotNull final ActionEvent e) {
-        new NoteGui(note).open();
+        try {
+            new NoteGui(note).open();
+        } catch (BadLocationException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
