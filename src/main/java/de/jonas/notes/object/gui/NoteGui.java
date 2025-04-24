@@ -146,11 +146,11 @@ public final class NoteGui extends Gui implements Drawable {
                     }
 
                     textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
-                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition() + 1);
+                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
                     return;
                 }
 
-                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition() + 1);
+                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
             });
             panel.add(toggleButton);
         }

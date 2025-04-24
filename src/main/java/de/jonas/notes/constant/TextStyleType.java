@@ -10,7 +10,9 @@ import javax.swing.text.StyledEditorKit;
 @Getter
 public enum TextStyleType {
 
-    BOLD(new StyledEditorKit.BoldAction());
+    BOLD(new StyledEditorKit.BoldAction()),
+    ITALIC(new StyledEditorKit.ItalicAction()),
+    UNDERLINE(new StyledEditorKit.UnderlineAction());
 
 
     @NotNull
@@ -26,6 +28,14 @@ public enum TextStyleType {
         switch (this) {
             case BOLD:
                 StyleConstants.setBold(style, true);
+                break;
+
+            case ITALIC:
+                StyleConstants.setItalic(style, true);
+                break;
+
+            case UNDERLINE:
+                StyleConstants.setUnderline(style, true);
                 break;
         }
     }
