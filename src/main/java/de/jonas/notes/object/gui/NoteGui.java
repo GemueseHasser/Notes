@@ -13,6 +13,7 @@ import de.jonas.notes.object.component.RoundButton;
 import de.jonas.notes.object.component.RoundToggleButton;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -163,6 +164,11 @@ public final class NoteGui extends Gui implements Drawable {
             final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
             toggleButton.setText(style.getText());
             toggleButton.addActionListener(e -> {
+                if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
+                    toggleButton.setSelected(false);
+                    return;
+                }
+
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 
                 if (toggleButton.isSelected()) {
