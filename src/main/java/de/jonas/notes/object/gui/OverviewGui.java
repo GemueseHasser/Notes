@@ -49,7 +49,8 @@ public final class OverviewGui extends Gui implements Drawable {
     public OverviewGui() {
         super("", WIDTH, HEIGHT);
         this.addDrawable(this);
-        this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+        this.setSize(new Dimension(WIDTH, HEIGHT));
+        this.setResizable(false);
 
         final JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
