@@ -122,6 +122,7 @@ public final class NoteGui extends Gui implements Drawable {
             toggleButton.addActionListener(e -> {
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 
+                // check if user is focusing the text pane
                 if (!textPane.isFocusOwner()) {
                     if (!toggleButton.isSelected()) {
                         textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getText().length());
@@ -132,12 +133,14 @@ public final class NoteGui extends Gui implements Drawable {
                     return;
                 }
 
+                // check if button is selected
                 if (toggleButton.isSelected()) {
-                    // set start position
+                    // check if style already exists
                     if (!textStyleInformation.getStyles().containsKey(style)) {
                         textStyleInformation.getStyles().put(style, new LinkedList<>());
                     }
 
+                    // create new style information
                     textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
 
                     // check if user selects text
@@ -148,6 +151,7 @@ public final class NoteGui extends Gui implements Drawable {
                         return;
                     }
 
+                    // set start position
                     textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
                     return;
                 }
