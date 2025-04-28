@@ -1,11 +1,14 @@
 package de.jonas.notes.object.component;
 
+import de.jonas.notes.listener.CursorListener;
+import de.jonas.notes.object.Gui;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import javax.swing.JButton;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -13,8 +16,8 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * Ein {@link RoundButton} stellt eine Instanz eines {@link JButton Buttons} dar, mit dem Unterschied, dass
- * dieser Button abgerundete Ecken hat bzw. dass die Ecken auch so abgerundet sein können, dass der Button rund ist.
+ * Ein {@link RoundButton} stellt eine Instanz eines {@link JButton Buttons} dar, mit dem Unterschied, dass dieser
+ * Button abgerundete Ecken hat bzw. dass die Ecken auch so abgerundet sein können, dass der Button rund ist.
  */
 public final class RoundButton extends JButton {
 
@@ -36,16 +39,17 @@ public final class RoundButton extends JButton {
     //<editor-fold desc="CONSTRUCTORS">
 
     /**
-     * Erzeugt eine neue Instanz eines {@link RoundButton}. Ein {@link RoundButton} stellt eine Instanz
-     * eines {@link JButton Buttons} dar, mit dem Unterschied, dass dieser Button abgerundete Ecken hat bzw. dass die
-     * Ecken auch so abgerundet sein können, dass der Button rund ist.
+     * Erzeugt eine neue Instanz eines {@link RoundButton}. Ein {@link RoundButton} stellt eine Instanz eines
+     * {@link JButton Buttons} dar, mit dem Unterschied, dass dieser Button abgerundete Ecken hat bzw. dass die Ecken
+     * auch so abgerundet sein können, dass der Button rund ist.
      *
      * @param text     Der Text, der auf diesem Button angezeigt wird.
      * @param rounding Die Größe der Rundungen der Ecken des Buttons.
      */
     public RoundButton(
         @NotNull final String text,
-        @Range(from = 0, to = Integer.MAX_VALUE) final int rounding
+        @Range(from = 0, to = Integer.MAX_VALUE) final int rounding,
+        @NotNull final Gui parent
     ) {
         super(text);
         this.rounding = rounding;
@@ -53,6 +57,8 @@ public final class RoundButton extends JButton {
         super.setContentAreaFilled(false);
         super.setFocusable(false);
         super.setBackground(Color.LIGHT_GRAY);
+        super.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        super.addMouseListener(new CursorListener(parent));
     }
     //</editor-fold>
 

@@ -26,6 +26,7 @@ import javax.swing.JToolBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -71,10 +72,8 @@ public final class NoteGui extends Gui implements Drawable {
         final JToolBar toolBar = new JToolBar();
 
         for (@NotNull final TextStyleType style : TextStyleType.values()) {
-            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
+            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10, this);
             toggleButton.setText(style.getText());
-            toggleButton.setCursor(Notes.getCustomHandCursor());
-            toggleButton.addMouseListener(new CursorListener(this));
             toggleButton.addActionListener(e -> {
                 if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
                     toggleButton.setSelected(false);
@@ -135,7 +134,10 @@ public final class NoteGui extends Gui implements Drawable {
 
             for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
                 final StyledDocument document = textPane.getStyledDocument();
-                final Style documentStyle = document.addStyle(styleType.name() + styleInformation.getStartPosition(), null);
+                final Style documentStyle = document.addStyle(
+                    styleType.name() + styleInformation.getStartPosition(),
+                    null
+                );
                 styleType.setStyle(documentStyle);
 
                 final String styled = textPane.getText().substring(
@@ -149,7 +151,7 @@ public final class NoteGui extends Gui implements Drawable {
         }
 
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        final RoundButton saveButton = new RoundButton("Speichern", 10);
+        final RoundButton saveButton = new RoundButton("Speichern", 10, this);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
                 titleField.getText(),
@@ -179,10 +181,8 @@ public final class NoteGui extends Gui implements Drawable {
 
             this.dispose();
         });
-        saveButton.setCursor(Notes.getCustomHandCursor());
-        saveButton.addMouseListener(new CursorListener(this));
 
-        final RoundButton deleteButton = new RoundButton("Löschen", 10);
+        final RoundButton deleteButton = new RoundButton("Löschen", 10, this);
         deleteButton.addActionListener(e -> {
             final int delete = JOptionPane.showConfirmDialog(
                 null,
@@ -202,8 +202,6 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.deleteTextStyle(note);
             this.dispose();
         });
-        deleteButton.setCursor(Notes.getCustomHandCursor());
-        deleteButton.addMouseListener(new CursorListener(this));
 
         panel.add(saveButton);
         panel.add(deleteButton);

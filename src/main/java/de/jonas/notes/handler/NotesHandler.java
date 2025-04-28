@@ -45,7 +45,7 @@ public final class NotesHandler {
         return notes
             .stream()
             .sorted((date1, date2) -> date1.getDateTime().isBefore(date2.getDateTime()) ? 1 :
-                date1.getDateTime().equals(date2.getDateTime()) ? 0 : -1
+                                      date1.getDateTime().equals(date2.getDateTime()) ? 0 : -1
             ).collect(Collectors.toList());
     }
 

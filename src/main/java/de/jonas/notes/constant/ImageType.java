@@ -27,9 +27,7 @@ public enum ImageType {
     /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine neue Notiz erstellt. */
     CREATE_NOTE_ICON("createNote.png", 130, 150),
     /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine Notiz löschen möchte. */
-    DELETE_NOTE_ICON("deleteNote.png", 150, 150),
-    /** Der Typ des Bildes, welches als Hand-Cursor geladen wird. */
-    HAND_CURSOR("handCursor.png", 50, 50);
+    DELETE_NOTE_ICON("deleteNote.png", 150, 150);
     //</editor-fold>
 
 

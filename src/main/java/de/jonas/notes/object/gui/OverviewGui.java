@@ -1,10 +1,8 @@
 package de.jonas.notes.object.gui;
 
-import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
-import de.jonas.notes.listener.CursorListener;
 import de.jonas.notes.listener.NoteClickListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
@@ -56,7 +54,7 @@ public final class OverviewGui extends Gui implements Drawable {
 
         notesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
-        final RoundButton createNoteButton = new RoundButton("", 100);
+        final RoundButton createNoteButton = new RoundButton("", 100, this);
         createNoteButton.setIcon(new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()));
         createNoteButton.setFont(TITLE_FONT.deriveFont(15F));
         createNoteButton.addActionListener(e -> {
@@ -78,8 +76,6 @@ public final class OverviewGui extends Gui implements Drawable {
 
             reloadNotes();
         });
-        createNoteButton.setCursor(Notes.getCustomHandCursor());
-        createNoteButton.addMouseListener(new CursorListener(this));
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -131,12 +127,11 @@ public final class OverviewGui extends Gui implements Drawable {
     public void addNoteButton(@NotNull final Note note) {
         final RoundButton button = new RoundButton(
             "<html>" + note.getTitle() + "<br><br>" + FORMATTER.format(note.getDateTime()),
-            30
+            30,
+            this
         );
         button.setPreferredSize(new Dimension(150, 150));
         button.addActionListener(new NoteClickListener(note));
-        button.setCursor(Notes.getCustomHandCursor());
-        button.addMouseListener(new CursorListener(this));
         notesPanel.add(button);
     }
 

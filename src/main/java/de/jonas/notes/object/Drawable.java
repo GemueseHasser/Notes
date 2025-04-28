@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.Graphics2D;
 
 /**
- * Ein {@link Drawable} stellt eine Schnittstelle dar, welche zu einem {@link Gui} hinzugefügt werden kann, um
- * grafische Komponenten auf das Gui zu zeichnen.
+ * Ein {@link Drawable} stellt eine Schnittstelle dar, welche zu einem {@link Gui} hinzugefügt werden kann, um grafische
+ * Komponenten auf das Gui zu zeichnen.
  */
 public interface Drawable {
 

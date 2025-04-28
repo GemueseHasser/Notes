@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Range;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -33,12 +34,12 @@ public class Gui extends JFrame {
     //<editor-fold desc="CONSTRUCTORS">
 
     /**
-     * Erzeugt ein neues Fenster (Gui) und implementiert die Basislogik für die Darstellung und Verwaltung
-     * von Grafikkomponenten.
+     * Erzeugt ein neues Fenster (Gui) und implementiert die Basislogik für die Darstellung und Verwaltung von
+     * Grafikkomponenten.
      *
-     * @param title      Der Titel des Fensters.
-     * @param width      Die Breite des Fensters.
-     * @param height     Die Höhe des Fensters.
+     * @param title  Der Titel des Fensters.
+     * @param width  Die Breite des Fensters.
+     * @param height Die Höhe des Fensters.
      */
     public Gui(
         @NotNull final String title,
@@ -84,8 +85,8 @@ public class Gui extends JFrame {
     }
 
     /**
-     * Öffnet das Fenster und zeigt es dem Benutzer an.
-     * Diese Methode sollte nach der Erstellung des Fensters aufgerufen werden.
+     * Öffnet das Fenster und zeigt es dem Benutzer an. Diese Methode sollte nach der Erstellung des Fensters aufgerufen
+     * werden.
      */
     public void open() {
         super.setVisible(true);
@@ -95,8 +96,8 @@ public class Gui extends JFrame {
     //<editor-fold desc="Draw">
 
     /**
-     * Das Zeichenfeld des Fensters, in dem alle grafischen Elemente gezeichnet werden.
-     * Diese Klasse überschreibt Funktionen von {@link JLabel}, um das Zeichnen zu erleichtern.
+     * Das Zeichenfeld des Fensters, in dem alle grafischen Elemente gezeichnet werden. Diese Klasse überschreibt
+     * Funktionen von {@link JLabel}, um das Zeichnen zu erleichtern.
      */
     private final class Draw extends JLabel {
 

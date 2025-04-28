@@ -1,11 +1,15 @@
 package de.jonas.notes.object.component;
 
+import de.jonas.notes.listener.CursorListener;
+import de.jonas.notes.object.Gui;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import javax.swing.JToggleButton;
 import javax.swing.text.StyledEditorKit;
+
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -13,8 +17,8 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * Ein {@link RoundToggleButton} stellt eine Instanz eines {@link JToggleButton} dar, mit dem Unterschied, dass
- * dieser Button abgerundete Ecken hat bzw. dass die Ecken auch so abgerundet sein können, dass der Button rund ist.
+ * Ein {@link RoundToggleButton} stellt eine Instanz eines {@link JToggleButton} dar, mit dem Unterschied, dass dieser
+ * Button abgerundete Ecken hat bzw. dass die Ecken auch so abgerundet sein können, dass der Button rund ist.
  */
 public final class RoundToggleButton extends JToggleButton {
 
@@ -46,7 +50,8 @@ public final class RoundToggleButton extends JToggleButton {
      */
     public RoundToggleButton(
         @NotNull final StyledEditorKit.StyledTextAction textAction,
-        @Range(from = 0, to = Integer.MAX_VALUE) final int rounding
+        @Range(from = 0, to = Integer.MAX_VALUE) final int rounding,
+        @NotNull final Gui parent
     ) {
         super(textAction);
         this.rounding = rounding;
@@ -54,6 +59,8 @@ public final class RoundToggleButton extends JToggleButton {
         super.setContentAreaFilled(false);
         super.setFocusable(false);
         super.setBackground(Color.LIGHT_GRAY);
+        super.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        super.addMouseListener(new CursorListener(parent));
     }
     //</editor-fold>
 
