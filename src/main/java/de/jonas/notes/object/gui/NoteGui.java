@@ -51,8 +51,8 @@ public final class NoteGui extends Gui implements Drawable {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 22);
     @NotNull
     private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 18);
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 600;
+    private static final int WIDTH = 700;
+    private static final int HEIGHT = 550;
 
 
     @NotNull
@@ -150,6 +150,8 @@ public final class NoteGui extends Gui implements Drawable {
             }
         }
 
+        if (note.getLines().isEmpty()) textPane.setText("");
+
         final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         final RoundButton saveButton = new RoundButton("Speichern", 10, this);
         saveButton.addActionListener(e -> {
@@ -212,9 +214,10 @@ public final class NoteGui extends Gui implements Drawable {
         this.pack();
     }
 
+
     @Override
     public void draw(final @NotNull Graphics2D g) {
-        if (!textPane.getText().isEmpty()) return;
+        if (!textPane.getText().trim().isEmpty()) return;
 
         g.setFont(TEXT_FONT);
         g.drawString("Notizen hinzufügen...", 7, scrollTextPane.getY() + g.getFontMetrics().getAscent());
