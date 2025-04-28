@@ -14,7 +14,6 @@ import de.jonas.notes.object.component.RoundButton;
 import de.jonas.notes.object.component.RoundToggleButton;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -75,11 +74,6 @@ public final class NoteGui extends Gui implements Drawable {
             final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10, this);
             toggleButton.setText(style.getText());
             toggleButton.addActionListener(e -> {
-                if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
-                    toggleButton.setSelected(false);
-                    return;
-                }
-
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 
                 if (toggleButton.isSelected()) {
@@ -129,24 +123,21 @@ public final class NoteGui extends Gui implements Drawable {
         }
 
         // format text
+        final StyledDocument document = textPane.getStyledDocument();
+
         for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
             final TextStyleType styleType = styleEntry.getKey();
 
             for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
-                final StyledDocument document = textPane.getStyledDocument();
-                final Style documentStyle = document.addStyle(
-                    styleType.name() + styleInformation.getStartPosition(),
-                    null
-                );
-                styleType.setStyle(documentStyle);
+                for (int i = styleInformation.getStartPosition(); i < styleInformation.getEndPosition(); i++) {
+                    final Style tempStyle = document.getStyle("" + i);
+                    final Style style = tempStyle == null ? document.addStyle("" + i, null) : tempStyle;
+                    styleType.expandStyle(style);
 
-                final String styled = textPane.getText().substring(
-                    styleInformation.getStartPosition(),
-                    styleInformation.getEndPosition()
-                );
-
-                document.remove(styleInformation.getStartPosition(), styled.length());
-                document.insertString(styleInformation.getStartPosition(), styled, documentStyle);
+                    final String currentChar = document.getText(i, 1);
+                    document.remove(i, 1);
+                    document.insertString(i, currentChar, style);
+                }
             }
         }
 

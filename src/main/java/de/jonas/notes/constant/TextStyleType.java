@@ -30,7 +30,7 @@ public enum TextStyleType {
     }
 
 
-    public void setStyle(@NotNull final Style style) {
+    public void expandStyle(@NotNull final Style style) {
         switch (this) {
             case BOLD:
                 StyleConstants.setBold(style, true);
