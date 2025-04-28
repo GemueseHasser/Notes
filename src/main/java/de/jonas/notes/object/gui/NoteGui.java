@@ -97,13 +97,13 @@ public final class NoteGui extends Gui implements Drawable {
         }
 
         final JTextField titleField = new JTextField(note.getTitle());
+        titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
-        titleField.setBorder(null);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
 
         final JPanel pageStartPanel = new JPanel(new GridLayout(2, 1));
-        pageStartPanel.add(toolBar, 0);
-        pageStartPanel.add(titleField, 1);
+        pageStartPanel.add(titleField, 0);
+        pageStartPanel.add(toolBar, 1);
 
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
