@@ -6,6 +6,7 @@ import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.CursorListener;
+import de.jonas.notes.listener.TextStyleInteractListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
@@ -116,55 +117,38 @@ public final class NoteGui extends Gui implements Drawable {
         final JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
         toolBar.setFloatable(false);
 
-        for (@NotNull final TextStyleType style : TextStyleType.values()) {
-            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10, this);
-            toggleButton.setText(style.getText());
-            toggleButton.addActionListener(e -> {
-                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
+        for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
+            final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
+            toggleButton.setText(styleType.getText());
+            toggleButton.addActionListener(new TextStyleInteractListener(note, styleType, toggleButton, textPane));
 
-                // check if user is focusing the text pane
-                if (!textPane.isFocusOwner()) {
-                    if (!toggleButton.isSelected()) {
-                        textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getText().length());
-                        return;
-                    }
-
-                    toggleButton.setSelected(false);
-                    return;
-                }
-
-                // check if button is selected
-                if (toggleButton.isSelected()) {
-                    // check if style already exists
-                    if (!textStyleInformation.getStyles().containsKey(style)) {
-                        textStyleInformation.getStyles().put(style, new LinkedList<>());
-                    }
-
-                    // create new style information
-                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
-
-                    // check if user selects text
-                    if (textPane.getSelectionStart() != textPane.getSelectionEnd()) {
-                        textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getSelectionStart());
-                        textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getSelectionEnd());
-                        toggleButton.setSelected(false);
-                        return;
-                    }
-
-                    // set start position
-                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
-                    return;
-                }
-
-                // set end position
-                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
-            });
             styleButtons.add(toggleButton);
             toolBar.add(toggleButton);
             toolBar.addSeparator();
         }
 
+        final JPanel noteOptionPanel = getNoteOptionPanel(note, titleField);
+
+        this.add(titleField, BorderLayout.PAGE_START);
+        this.add(scrollTextPane, BorderLayout.CENTER);
+        this.add(noteOptionPanel, BorderLayout.SOUTH);
+        this.add(toolBar, BorderLayout.WEST);
+        this.pack();
+    }
+
+    @NotNull
+    private JPanel getNoteOptionPanel(final @NotNull Note note, final JTextField titleField) {
         final JPanel noteOptionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        final RoundButton saveButton = getSaveButton(note, titleField);
+        final RoundButton deleteButton = getDeleteButton(note);
+
+        noteOptionPanel.add(saveButton);
+        noteOptionPanel.add(deleteButton);
+        return noteOptionPanel;
+    }
+
+    @NotNull
+    private RoundButton getSaveButton(@NotNull final Note note, @NotNull final JTextField titleField) {
         final RoundButton saveButton = new RoundButton("Speichern", 10, this);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
@@ -195,7 +179,11 @@ public final class NoteGui extends Gui implements Drawable {
 
             this.dispose();
         });
+        return saveButton;
+    }
 
+    @NotNull
+    private RoundButton getDeleteButton(@NotNull final Note note) {
         final RoundButton deleteButton = new RoundButton("Löschen", 10, this);
         deleteButton.addActionListener(e -> {
             final int delete = JOptionPane.showConfirmDialog(
@@ -216,23 +204,17 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.deleteTextStyle(note);
             this.dispose();
         });
-
-        noteOptionPanel.add(saveButton);
-        noteOptionPanel.add(deleteButton);
-
-        this.add(titleField, BorderLayout.PAGE_START);
-        this.add(scrollTextPane, BorderLayout.CENTER);
-        this.add(noteOptionPanel, BorderLayout.SOUTH);
-        this.add(toolBar, BorderLayout.WEST);
-        this.pack();
+        return deleteButton;
     }
 
 
+    //<editor-fold desc="implementation">
     @Override
-    public void draw(final @NotNull Graphics2D g) {
+    public void draw(@NotNull final Graphics2D g) {
         if (!textPane.getText().trim().isEmpty()) return;
 
         g.setFont(TEXT_FONT);
         g.drawString("Notizen hinzufügen...", 7, scrollTextPane.getY() + g.getFontMetrics().getAscent());
     }
+    //</editor-fold>
 }
