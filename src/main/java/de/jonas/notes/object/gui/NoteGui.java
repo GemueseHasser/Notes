@@ -26,6 +26,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -35,6 +36,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,6 +116,21 @@ public final class NoteGui extends Gui implements Drawable {
             public void focusLost(final FocusEvent e) {
                 super.focusLost(e);
                 repaint();
+            }
+        });
+        textPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+
+                NoteGui.this.getRootPane().setCursor(Notes.getCustomTextCursor());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+
+                NoteGui.this.getRootPane().setCursor(Cursor.getDefaultCursor());
             }
         });
 
