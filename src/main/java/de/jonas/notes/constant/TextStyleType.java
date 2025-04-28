@@ -10,9 +10,9 @@ import javax.swing.text.StyledEditorKit;
 @Getter
 public enum TextStyleType {
 
-    BOLD(new StyledEditorKit.BoldAction(), "Fett"),
-    ITALIC(new StyledEditorKit.ItalicAction(), "Kursiv"),
-    UNDERLINE(new StyledEditorKit.UnderlineAction(), "Unterstrichen");
+    BOLD(new StyledEditorKit.BoldAction(), "<html><b>F"),
+    ITALIC(new StyledEditorKit.ItalicAction(), "<html><i>K"),
+    UNDERLINE(new StyledEditorKit.UnderlineAction(), "<html><u>U");
 
 
     @NotNull

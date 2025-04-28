@@ -10,6 +10,7 @@ import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
 import de.jonas.notes.object.TextStyleInformation;
 import de.jonas.notes.object.component.RoundButton;
+import de.jonas.notes.object.component.RoundToggleButton;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ImageIcon;
@@ -19,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
@@ -50,7 +51,7 @@ public final class NoteGui extends Gui implements Drawable {
 
 
     @NotNull
-    private final List<JToggleButton> styleButtons = new ArrayList<>();
+    private final List<RoundToggleButton> styleButtons = new ArrayList<>();
     @NotNull
     private final JTextPane textPane = new JTextPane();
     @NotNull
@@ -113,7 +114,7 @@ public final class NoteGui extends Gui implements Drawable {
             );
 
             // imitate button unselect
-            for (@NotNull final JToggleButton styleButton : styleButtons) {
+            for (@NotNull final RoundToggleButton styleButton : styleButtons) {
                 if (!styleButton.isSelected()) continue;
                 styleButton.setSelected(false);
 
@@ -156,10 +157,11 @@ public final class NoteGui extends Gui implements Drawable {
             this.dispose();
         });
 
+        final JToolBar toolBar = new JToolBar();
+
         for (@NotNull final TextStyleType style : TextStyleType.values()) {
-            final JToggleButton toggleButton = new JToggleButton(style.getStyledTextAction());
+            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
             toggleButton.setText(style.getText());
-            toggleButton.setFocusable(false);
             toggleButton.addActionListener(e -> {
                 final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
 
@@ -176,14 +178,16 @@ public final class NoteGui extends Gui implements Drawable {
                 textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
             });
             styleButtons.add(toggleButton);
-            panel.add(toggleButton);
+            toolBar.add(toggleButton);
+            toolBar.addSeparator();
         }
 
         panel.add(saveButton);
         panel.add(deleteButton);
 
-        this.add(scrollTextPane, BorderLayout.CENTER);
+        this.add(toolBar, BorderLayout.PAGE_START);
         this.add(titleField, BorderLayout.NORTH);
+        this.add(scrollTextPane, BorderLayout.CENTER);
         this.add(panel, BorderLayout.SOUTH);
         this.pack();
     }
