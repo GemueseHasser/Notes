@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -65,10 +66,44 @@ public final class NoteGui extends Gui implements Drawable {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
 
+        final JToolBar toolBar = new JToolBar();
+
+        for (@NotNull final TextStyleType style : TextStyleType.values()) {
+            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
+            toggleButton.setText(style.getText());
+            toggleButton.addActionListener(e -> {
+                if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
+                    toggleButton.setSelected(false);
+                    return;
+                }
+
+                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
+
+                if (toggleButton.isSelected()) {
+                    if (!textStyleInformation.getStyles().containsKey(style)) {
+                        textStyleInformation.getStyles().put(style, new LinkedList<>());
+                    }
+
+                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
+                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
+                    return;
+                }
+
+                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
+            });
+            styleButtons.add(toggleButton);
+            toolBar.add(toggleButton);
+            toolBar.addSeparator();
+        }
+
         final JTextField titleField = new JTextField(note.getTitle());
         titleField.setFont(TITLE_FONT);
         titleField.setBorder(null);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
+
+        final JPanel pageStartPanel = new JPanel(new GridLayout(2, 1));
+        pageStartPanel.add(toolBar, 0);
+        pageStartPanel.add(titleField, 1);
 
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
@@ -158,41 +193,10 @@ public final class NoteGui extends Gui implements Drawable {
             this.dispose();
         });
 
-        final JToolBar toolBar = new JToolBar();
-
-        for (@NotNull final TextStyleType style : TextStyleType.values()) {
-            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
-            toggleButton.setText(style.getText());
-            toggleButton.addActionListener(e -> {
-                if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
-                    toggleButton.setSelected(false);
-                    return;
-                }
-
-                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
-
-                if (toggleButton.isSelected()) {
-                    if (!textStyleInformation.getStyles().containsKey(style)) {
-                        textStyleInformation.getStyles().put(style, new LinkedList<>());
-                    }
-
-                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
-                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
-                    return;
-                }
-
-                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
-            });
-            styleButtons.add(toggleButton);
-            toolBar.add(toggleButton);
-            toolBar.addSeparator();
-        }
-
         panel.add(saveButton);
         panel.add(deleteButton);
 
-        this.add(toolBar, BorderLayout.PAGE_START);
-        this.add(titleField, BorderLayout.NORTH);
+        this.add(pageStartPanel, BorderLayout.PAGE_START);
         this.add(scrollTextPane, BorderLayout.CENTER);
         this.add(panel, BorderLayout.SOUTH);
         this.pack();
