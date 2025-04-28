@@ -32,7 +32,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -68,41 +67,12 @@ public final class NoteGui extends Gui implements Drawable {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
 
-        final JToolBar toolBar = new JToolBar();
-
-        for (@NotNull final TextStyleType style : TextStyleType.values()) {
-            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10, this);
-            toggleButton.setText(style.getText());
-            toggleButton.addActionListener(e -> {
-                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
-
-                if (toggleButton.isSelected()) {
-                    if (!textStyleInformation.getStyles().containsKey(style)) {
-                        textStyleInformation.getStyles().put(style, new LinkedList<>());
-                    }
-
-                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
-                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
-                    return;
-                }
-
-                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
-            });
-            styleButtons.add(toggleButton);
-            toolBar.add(toggleButton);
-            toolBar.addSeparator();
-        }
-
         final JTextField titleField = new JTextField(note.getTitle());
         titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
         titleField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         titleField.addMouseListener(new CursorListener(this));
-
-        final JPanel pageStartPanel = new JPanel(new GridLayout(2, 1));
-        pageStartPanel.add(titleField, 0);
-        pageStartPanel.add(toolBar, 1);
 
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
@@ -143,7 +113,43 @@ public final class NoteGui extends Gui implements Drawable {
 
         if (note.getLines().isEmpty()) textPane.setText("");
 
-        final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        final JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
+        toolBar.setFloatable(false);
+
+        for (@NotNull final TextStyleType style : TextStyleType.values()) {
+            final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10, this);
+            toggleButton.setText(style.getText());
+            toggleButton.addActionListener(e -> {
+                final TextStyleInformation textStyleInformation = note.getTextStyleInformation();
+
+                if (!textPane.isFocusOwner()) {
+                    if (!toggleButton.isSelected()) {
+                        textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getText().length());
+                        return;
+                    }
+
+                    toggleButton.setSelected(false);
+                    return;
+                }
+
+                if (toggleButton.isSelected()) {
+                    if (!textStyleInformation.getStyles().containsKey(style)) {
+                        textStyleInformation.getStyles().put(style, new LinkedList<>());
+                    }
+
+                    textStyleInformation.getStyles().get(style).addLast(new TextStyleInformation.StyleInformation());
+                    textStyleInformation.getStyles().get(style).getLast().setStartPosition(textPane.getCaretPosition());
+                    return;
+                }
+
+                textStyleInformation.getStyles().get(style).getLast().setEndPosition(textPane.getCaretPosition());
+            });
+            styleButtons.add(toggleButton);
+            toolBar.add(toggleButton);
+            toolBar.addSeparator();
+        }
+
+        final JPanel noteOptionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         final RoundButton saveButton = new RoundButton("Speichern", 10, this);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
@@ -196,12 +202,13 @@ public final class NoteGui extends Gui implements Drawable {
             this.dispose();
         });
 
-        panel.add(saveButton);
-        panel.add(deleteButton);
+        noteOptionPanel.add(saveButton);
+        noteOptionPanel.add(deleteButton);
 
-        this.add(pageStartPanel, BorderLayout.PAGE_START);
+        this.add(titleField, BorderLayout.PAGE_START);
         this.add(scrollTextPane, BorderLayout.CENTER);
-        this.add(panel, BorderLayout.SOUTH);
+        this.add(noteOptionPanel, BorderLayout.SOUTH);
+        this.add(toolBar, BorderLayout.WEST);
         this.pack();
     }
 
