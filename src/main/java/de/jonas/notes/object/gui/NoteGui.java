@@ -103,6 +103,21 @@ public final class NoteGui extends Gui implements Drawable {
         titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
+        titleField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+
+                NoteGui.this.getRootPane().setCursor(Notes.getCustomTextCursor());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+
+                NoteGui.this.getRootPane().setCursor(Cursor.getDefaultCursor());
+            }
+        });
 
         final JPanel pageStartPanel = new JPanel(new GridLayout(2, 1));
         pageStartPanel.add(titleField, 0);
