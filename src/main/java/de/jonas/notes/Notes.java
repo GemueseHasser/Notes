@@ -24,14 +24,14 @@ public class Notes {
     @Getter
     private static OverviewGui overviewGui;
     @Getter
-    private static Cursor customTextCursor;
+    private static Cursor customHandCursor;
 
 
     public static void main(@NotNull final String @NotNull [] args) throws IOException {
         Files.createDirectories(NOTES_FOLDER.toPath());
 
-        customTextCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-            ImageType.TEXT_CURSOR.getImage(),
+        customHandCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            ImageType.HAND_CURSOR.getImage(),
             new Point(15, 10),
             "custom text cursor"
         );

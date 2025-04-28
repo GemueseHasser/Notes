@@ -5,6 +5,7 @@ import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
+import de.jonas.notes.listener.CursorListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
@@ -36,8 +37,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +73,8 @@ public final class NoteGui extends Gui implements Drawable {
         for (@NotNull final TextStyleType style : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(style.getStyledTextAction(), 10);
             toggleButton.setText(style.getText());
+            toggleButton.setCursor(Notes.getCustomHandCursor());
+            toggleButton.addMouseListener(new CursorListener(this));
             toggleButton.addActionListener(e -> {
                 if (styleButtons.stream().filter(AbstractButton::isSelected).count() > 1) {
                     toggleButton.setSelected(false);
@@ -103,21 +104,8 @@ public final class NoteGui extends Gui implements Drawable {
         titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
-        titleField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-
-                NoteGui.this.getRootPane().setCursor(Notes.getCustomTextCursor());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-
-                NoteGui.this.getRootPane().setCursor(Cursor.getDefaultCursor());
-            }
-        });
+        titleField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        titleField.addMouseListener(new CursorListener(this));
 
         final JPanel pageStartPanel = new JPanel(new GridLayout(2, 1));
         pageStartPanel.add(titleField, 0);
@@ -126,26 +114,13 @@ public final class NoteGui extends Gui implements Drawable {
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
         textPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
+        textPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        textPane.addMouseListener(new CursorListener(this));
         textPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(final FocusEvent e) {
                 super.focusLost(e);
                 repaint();
-            }
-        });
-        textPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-
-                NoteGui.this.getRootPane().setCursor(Notes.getCustomTextCursor());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-
-                NoteGui.this.getRootPane().setCursor(Cursor.getDefaultCursor());
             }
         });
 
@@ -204,6 +179,8 @@ public final class NoteGui extends Gui implements Drawable {
 
             this.dispose();
         });
+        saveButton.setCursor(Notes.getCustomHandCursor());
+        saveButton.addMouseListener(new CursorListener(this));
 
         final RoundButton deleteButton = new RoundButton("Löschen", 10);
         deleteButton.addActionListener(e -> {
@@ -225,6 +202,8 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.deleteTextStyle(note);
             this.dispose();
         });
+        deleteButton.setCursor(Notes.getCustomHandCursor());
+        deleteButton.addMouseListener(new CursorListener(this));
 
         panel.add(saveButton);
         panel.add(deleteButton);

@@ -1,8 +1,10 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
+import de.jonas.notes.listener.CursorListener;
 import de.jonas.notes.listener.NoteClickListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
@@ -76,6 +78,8 @@ public final class OverviewGui extends Gui implements Drawable {
 
             reloadNotes();
         });
+        createNoteButton.setCursor(Notes.getCustomHandCursor());
+        createNoteButton.addMouseListener(new CursorListener(this));
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -131,6 +135,8 @@ public final class OverviewGui extends Gui implements Drawable {
         );
         button.setPreferredSize(new Dimension(150, 150));
         button.addActionListener(new NoteClickListener(note));
+        button.setCursor(Notes.getCustomHandCursor());
+        button.addMouseListener(new CursorListener(this));
         notesPanel.add(button);
     }
 

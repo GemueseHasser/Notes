@@ -52,7 +52,7 @@ public class Gui extends JFrame {
         super.setLayout(null);
         super.addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(@NotNull final ComponentEvent e) {
                 super.componentResized(e);
 
                 draw.setSize(
