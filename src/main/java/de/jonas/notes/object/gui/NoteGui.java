@@ -1,8 +1,15 @@
 package de.jonas.notes.object.gui;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
+import de.jonas.notes.handler.FileHandler;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.CursorListener;
@@ -28,13 +35,18 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,7 +156,7 @@ public final class NoteGui extends Gui implements Drawable {
             toolBar.addSeparator();
         }
 
-        final JPanel noteOptionPanel = getNoteOptionPanel(note, titleField);
+        final JPanel noteOptionPanel = getNoteOptionPanel(titleField);
 
         this.add(titleField, BorderLayout.PAGE_START);
         this.add(scrollTextPane, BorderLayout.CENTER);
@@ -154,18 +166,57 @@ public final class NoteGui extends Gui implements Drawable {
     }
 
     @NotNull
-    private JPanel getNoteOptionPanel(final @NotNull Note note, final JTextField titleField) {
+    private JPanel getNoteOptionPanel(final JTextField titleField) {
         final JPanel noteOptionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        final RoundButton saveButton = getSaveButton(note, titleField);
-        final RoundButton deleteButton = getDeleteButton(note);
+        final RoundButton saveButton = getSaveButton(titleField);
+        final RoundButton deleteButton = getDeleteButton();
+        final RoundButton exportButton = getExportButton();
 
         noteOptionPanel.add(saveButton);
         noteOptionPanel.add(deleteButton);
+        noteOptionPanel.add(exportButton);
         return noteOptionPanel;
     }
 
     @NotNull
-    private RoundButton getSaveButton(@NotNull final Note note, @NotNull final JTextField titleField) {
+    private RoundButton getExportButton() {
+        final RoundButton exportButton = new RoundButton("Exportieren", 10, this);
+        exportButton.addActionListener(e -> {
+            final File exportFile = FileHandler.getFile(
+                "Exportieren als PDF...",
+                "Exportieren",
+                new String[]{"pdf"}
+            );
+            assert exportFile != null;
+            try (final PdfWriter pdfWriter = new PdfWriter(exportFile)) {
+                final PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+                final Document document = new Document(pdfDocument);
+
+                final BufferedImage textImage = new BufferedImage(
+                    textPane.getWidth(),
+                    textPane.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+                );
+                final Graphics2D g = textImage.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                textPane.paint(g);
+                g.dispose();
+
+                final ImageData imageData = ImageDataFactory.create(textImage, Color.WHITE);
+                final Image image = new Image(imageData);
+
+                document.add(image);
+                document.close();
+            } catch (@NotNull final IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        return exportButton;
+    }
+
+    @NotNull
+    private RoundButton getSaveButton(@NotNull final JTextField titleField) {
         final RoundButton saveButton = new RoundButton("Speichern", 10, this);
         saveButton.addActionListener(e -> {
             final Note newNote = new Note(
@@ -193,7 +244,7 @@ public final class NoteGui extends Gui implements Drawable {
     }
 
     @NotNull
-    private RoundButton getDeleteButton(@NotNull final Note note) {
+    private RoundButton getDeleteButton() {
         final RoundButton deleteButton = new RoundButton("Löschen", 10, this);
         deleteButton.addActionListener(e -> {
             final int delete = JOptionPane.showConfirmDialog(
