@@ -18,7 +18,9 @@ import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public final class OverviewGui extends Gui implements Drawable {
 
 
     @NotNull
+    private final GridBagConstraints constraints = new GridBagConstraints();
+    @NotNull
     private final JPanel notesPanel;
 
 
@@ -62,9 +66,9 @@ public final class OverviewGui extends Gui implements Drawable {
             HEIGHT - 2 * NOTES_MARGIN_TOP - this.getInsets().top
         );
 
-        final GridLayout notesPanelLayout = new GridLayout(1, NOTES_COLUMN_COUNT, 5, 5);
-        notesPanel = new JPanel(notesPanelLayout);
-        notesPanelLayout.setRows(notesPanel.getComponentCount() / NOTES_COLUMN_COUNT);
+        final GridBagLayout gridBagLayout = new GridBagLayout();
+        notesPanel = new JPanel(gridBagLayout);
+        constraints.insets = new Insets(5, 5, 5, 5);
 
         final RoundButton createNoteButton = new RoundButton("", 100, this);
         createNoteButton.setBounds(
@@ -93,7 +97,6 @@ public final class OverviewGui extends Gui implements Drawable {
             TextStyleHandler.saveTextStyle(note, note.getTextStyleInformation());
 
             reloadNotes();
-            notesPanelLayout.setRows(notesPanel.getComponentCount() / NOTES_COLUMN_COUNT);
             this.revalidate();
         });
 
@@ -127,7 +130,10 @@ public final class OverviewGui extends Gui implements Drawable {
         );
         button.setPreferredSize(new Dimension(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE));
         button.addActionListener(new NoteClickListener(note));
-        notesPanel.add(button);
+
+        constraints.gridx = notesPanel.getComponentCount() % NOTES_COLUMN_COUNT;
+        constraints.gridy = notesPanel.getComponentCount() / NOTES_COLUMN_COUNT;
+        notesPanel.add(button, constraints);
     }
 
     @Override
