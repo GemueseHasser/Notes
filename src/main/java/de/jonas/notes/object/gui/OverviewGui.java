@@ -15,13 +15,10 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,6 +37,7 @@ public final class OverviewGui extends Gui implements Drawable {
     private static final int NOTE_BUTTON_SIZE = 150;
     private static final int NOTES_MARGIN_TOP = 40;
     private static final int CREATE_BUTTON_MARGIN_BOTTOM = 50;
+    private static final int NOTES_COLUMN_COUNT = WIDTH / NOTE_BUTTON_SIZE - 1;
 
 
     @NotNull
@@ -53,14 +51,28 @@ public final class OverviewGui extends Gui implements Drawable {
         this.setResizable(false);
 
         final JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0, 0, WIDTH, HEIGHT);
         layeredPane.setLayout(null);
 
         final JScrollPane notesScrollPane = new JScrollPane();
+        notesScrollPane.setBounds(
+            0,
+            NOTES_MARGIN_TOP,
+            WIDTH - 18,
+            HEIGHT - 2 * NOTES_MARGIN_TOP - this.getInsets().top
+        );
 
-        final GridLayout notesPanelLayout = new GridLayout(1, 1, 5, 5);
+        final GridLayout notesPanelLayout = new GridLayout(1, NOTES_COLUMN_COUNT, 5, 5);
         notesPanel = new JPanel(notesPanelLayout);
+        notesPanelLayout.setRows(notesPanel.getComponentCount() / NOTES_COLUMN_COUNT);
 
         final RoundButton createNoteButton = new RoundButton("", 100, this);
+        createNoteButton.setBounds(
+            WIDTH - (int) (CREATE_BUTTON_SIZE * 1.5),
+            HEIGHT - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
+            CREATE_BUTTON_SIZE,
+            CREATE_BUTTON_SIZE
+        );
         createNoteButton.setIcon(new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()));
         createNoteButton.setFont(TITLE_FONT.deriveFont(15F));
         createNoteButton.addActionListener(e -> {
@@ -81,43 +93,8 @@ public final class OverviewGui extends Gui implements Drawable {
             TextStyleHandler.saveTextStyle(note, note.getTextStyleInformation());
 
             reloadNotes();
-        });
-
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(@NotNull final ComponentEvent e) {
-                final int width = e.getComponent().getWidth();
-                final int height = e.getComponent().getHeight();
-
-                final int notesColumnCount = width / (NOTE_BUTTON_SIZE + 5) - 1;
-                notesPanelLayout.setRows(notesPanel.getComponentCount() / notesColumnCount);
-                notesPanelLayout.setColumns(notesColumnCount);
-
-                layeredPane.setBounds(0, 0, width, height);
-
-                notesPanel.setBounds(
-                    0,
-                    0,
-                    width,
-                    height - NOTES_MARGIN_TOP - OverviewGui.this.getInsets().top
-                );
-
-                notesScrollPane.setBounds(
-                    0,
-                    NOTES_MARGIN_TOP,
-                    width,
-                    height - NOTES_MARGIN_TOP - OverviewGui.this.getInsets().top
-                );
-
-                createNoteButton.setBounds(
-                    width - (int) (CREATE_BUTTON_SIZE * 1.5),
-                    height - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
-                    CREATE_BUTTON_SIZE,
-                    CREATE_BUTTON_SIZE
-                );
-
-                OverviewGui.this.revalidate();
-            }
+            notesPanelLayout.setRows(notesPanel.getComponentCount() / NOTES_COLUMN_COUNT);
+            this.revalidate();
         });
 
         loadNotes();
