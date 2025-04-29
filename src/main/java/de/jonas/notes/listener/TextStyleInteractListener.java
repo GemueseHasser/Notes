@@ -47,9 +47,15 @@ public final class TextStyleInteractListener implements ActionListener {
                 if (sizeStyleButton.equals(toggleButton)) continue;
 
                 sizeStyleButton.setSelected(false);
-                noteGui.getNote().getTextStyleInformation().getStyles().get(
-                    TextStyleType.valueOf(sizeStyleButton.getText().toUpperCase())
-                ).getLast().setEndPosition(textPane.getCaretPosition());
+                final LinkedList<TextStyleInformation.StyleInformation> styleInformations = noteGui
+                    .getNote()
+                    .getTextStyleInformation()
+                    .getStyles()
+                    .get(TextStyleType.valueOf(sizeStyleButton.getText().toUpperCase()));
+
+                if (styleInformations != null) {
+                    styleInformations.getLast().setEndPosition(textPane.getCaretPosition());
+                }
             }
 
             // select current button
