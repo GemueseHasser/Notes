@@ -12,7 +12,13 @@ public enum TextStyleType {
 
     BOLD(new StyledEditorKit.BoldAction(), "<html><b>F"),
     ITALIC(new StyledEditorKit.ItalicAction(), "<html><i>K"),
-    UNDERLINE(new StyledEditorKit.UnderlineAction(), "<html><u>U");
+    UNDERLINE(new StyledEditorKit.UnderlineAction(), "<html><u>U"),
+    H1(new StyledEditorKit.FontSizeAction("h1", 34), "h1"),
+    H2(new StyledEditorKit.FontSizeAction("h2", 30), "h2"),
+    H3(new StyledEditorKit.FontSizeAction("h3", 24), "h3"),
+    H4(new StyledEditorKit.FontSizeAction("h4", 20), "h4"),
+    H5(new StyledEditorKit.FontSizeAction("h5", 18), "h5"),
+    H6(new StyledEditorKit.FontSizeAction("h6", 16), "h6");
 
 
     @NotNull
@@ -42,6 +48,30 @@ public enum TextStyleType {
 
             case UNDERLINE:
                 StyleConstants.setUnderline(style, true);
+                break;
+
+            case H1:
+                StyleConstants.setFontSize(style, 34);
+                break;
+
+            case H2:
+                StyleConstants.setFontSize(style, 30);
+                break;
+
+            case H3:
+                StyleConstants.setFontSize(style, 24);
+                break;
+
+            case H4:
+                StyleConstants.setFontSize(style, 20);
+                break;
+
+            case H5:
+                StyleConstants.setFontSize(style, 18);
+                break;
+
+            case H6:
+                StyleConstants.setFontSize(style, 16);
                 break;
         }
     }

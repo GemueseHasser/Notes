@@ -13,6 +13,7 @@ import de.jonas.notes.object.Note;
 import de.jonas.notes.object.TextStyleInformation;
 import de.jonas.notes.object.component.RoundButton;
 import de.jonas.notes.object.component.RoundToggleButton;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ImageIcon;
@@ -26,15 +27,12 @@ import javax.swing.JToolBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
-
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDateTime;
@@ -54,12 +52,17 @@ public final class NoteGui extends Gui implements Drawable {
     private static final int HEIGHT = 550;
 
 
+    @Getter
     @NotNull
     private final List<RoundToggleButton> styleButtons = new ArrayList<>();
+    @Getter
     @NotNull
     private final JTextPane textPane = new JTextPane();
     @NotNull
     private final JScrollPane scrollTextPane = new JScrollPane(textPane);
+    @Getter
+    @NotNull
+    private final Note note;
 
 
     public NoteGui(@NotNull final Note note) throws BadLocationException {
@@ -67,6 +70,8 @@ public final class NoteGui extends Gui implements Drawable {
         this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
+
+        this.note = note;
 
         final JTextField titleField = new JTextField(note.getTitle());
         titleField.setHorizontalAlignment(JTextField.CENTER);
@@ -120,7 +125,19 @@ public final class NoteGui extends Gui implements Drawable {
         for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
             toggleButton.setText(styleType.getText());
-            toggleButton.addActionListener(new TextStyleInteractListener(note, styleType, toggleButton, textPane));
+            final TextStyleInteractListener textStyleInteractListener = new TextStyleInteractListener(
+                this,
+                styleType,
+                toggleButton
+            );
+            toggleButton.addActionListener(textStyleInteractListener);
+
+            // select default font size
+            if (styleType == TextStyleType.H5) {
+                toggleButton.setSelected(true);
+                textStyleInteractListener.interactAction();
+                toggleButton.setSelected(true);
+            }
 
             styleButtons.add(toggleButton);
             toolBar.add(toggleButton);
@@ -161,14 +178,7 @@ public final class NoteGui extends Gui implements Drawable {
             for (@NotNull final RoundToggleButton styleButton : styleButtons) {
                 if (!styleButton.isSelected()) continue;
                 styleButton.setSelected(false);
-
-                for (@NotNull final ActionListener actionListener : styleButton.getActionListeners()) {
-                    actionListener.actionPerformed(new ActionEvent(
-                        styleButton,
-                        ActionEvent.ACTION_PERFORMED,
-                        "close all style attributes"
-                    ));
-                }
+                ((TextStyleInteractListener) styleButton.getActionListeners()[0]).interactAction();
             }
 
             NotesHandler.saveNote(newNote);
