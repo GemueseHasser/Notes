@@ -275,7 +275,11 @@ public final class NoteGui extends Gui implements Drawable {
         if (!textPane.getText().trim().isEmpty()) return;
 
         g.setFont(TEXT_FONT);
-        g.drawString("Notizen hinzufügen...", 7, scrollTextPane.getY() + g.getFontMetrics().getAscent());
+        g.drawString(
+            "Notizen hinzufügen...",
+            scrollTextPane.getX() + 10,
+            scrollTextPane.getY() + g.getFontMetrics().getAscent()
+        );
     }
     //</editor-fold>
 }

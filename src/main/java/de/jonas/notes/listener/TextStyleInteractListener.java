@@ -47,9 +47,7 @@ public final class TextStyleInteractListener implements ActionListener {
                 if (sizeStyleButton.equals(toggleButton)) continue;
 
                 sizeStyleButton.setSelected(false);
-                final LinkedList<TextStyleInformation.StyleInformation> styleInformations = noteGui
-                    .getNote()
-                    .getTextStyleInformation()
+                final LinkedList<TextStyleInformation.StyleInformation> styleInformations = textStyleInformation
                     .getStyles()
                     .get(TextStyleType.valueOf(sizeStyleButton.getText().toUpperCase()));
 
@@ -84,6 +82,11 @@ public final class TextStyleInteractListener implements ActionListener {
             textStyleInformation.getStyles().get(styleType).getLast().setStartPosition(textPane.getCaretPosition());
             return;
         }
+
+        final LinkedList<TextStyleInformation.StyleInformation> styleInformations = textStyleInformation
+            .getStyles()
+            .get(styleType);
+        if (styleInformations == null) return;
 
         // set end position
         textStyleInformation.getStyles().get(styleType).getLast().setEndPosition(textPane.getCaretPosition());
