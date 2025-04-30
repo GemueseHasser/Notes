@@ -1,6 +1,6 @@
 package de.jonas.notes.handler;
 
-import de.jonas.notes.Notes;
+import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.object.Note;
 import de.jonas.notes.object.TextStyleInformation;
@@ -18,7 +18,7 @@ public final class TextStyleHandler {
 
     public static void deleteTextStyle(@NotNull final Note note) {
         final File styleFile = new File(
-            Notes.NOTES_FOLDER + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
+            FileType.STYLE.getFile() + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
         );
         if (!styleFile.exists()) return;
 
@@ -27,7 +27,7 @@ public final class TextStyleHandler {
 
     public static void saveTextStyle(@NotNull final Note note, @NotNull final TextStyleInformation style) {
         final File styleFile = new File(
-            Notes.NOTES_FOLDER + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
+            FileType.STYLE.getFile() + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
         );
         try {
             styleFile.createNewFile();
@@ -64,7 +64,7 @@ public final class TextStyleHandler {
 
     public static void loadTextStyle(@NotNull final Note note) {
         final File styleFile = new File(
-            Notes.NOTES_FOLDER + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
+            FileType.STYLE.getFile() + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
         );
         try {
             if (styleFile.createNewFile()) return;

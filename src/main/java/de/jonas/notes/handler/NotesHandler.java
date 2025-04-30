@@ -1,6 +1,6 @@
 package de.jonas.notes.handler;
 
-import de.jonas.notes.Notes;
+import de.jonas.notes.constant.FileType;
 import de.jonas.notes.object.Note;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +58,7 @@ public final class NotesHandler {
 
     public static void saveNote(@NotNull final Note note) {
         final File noteFile = new File(
-            Notes.NOTES_FOLDER + File.separator + getDateTimeText(note.getDateTime()) + ".txt"
+            FileType.RAW.getFile() + File.separator + getDateTimeText(note.getDateTime()) + ".txt"
         );
         try {
             noteFile.createNewFile();
@@ -94,7 +94,7 @@ public final class NotesHandler {
     @NotNull
     private static List<File> getNoteFiles() {
         final List<File> notes = new ArrayList<>();
-        final File[] files = Notes.NOTES_FOLDER.listFiles();
+        final File[] files = FileType.RAW.getFile().listFiles();
 
         if (files == null) return notes;
 
@@ -115,7 +115,7 @@ public final class NotesHandler {
 
     @Nullable
     private static File getNoteFile(@NotNull final LocalDateTime dateTime) {
-        final File noteFile = new File(Notes.NOTES_FOLDER + File.separator + getDateTimeText(dateTime) + ".txt");
+        final File noteFile = new File(FileType.RAW.getFile()+ File.separator + getDateTimeText(dateTime) + ".txt");
 
         if (noteFile.exists()) return noteFile;
         return null;

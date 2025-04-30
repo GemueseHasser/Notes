@@ -1,6 +1,7 @@
 package de.jonas.notes.object.gui;
 
 import de.jonas.notes.Notes;
+import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.FileHandler;
@@ -47,7 +48,6 @@ import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,10 +143,9 @@ public final class NoteGui extends Gui implements Drawable {
             graphics.dispose();
 
             final File imageFile = new File(
-                Notes.NOTES_FOLDER + File.separator + "Resources" + File.separator + rawImageFile.getName()
+                FileType.RESOURCES.getFile() + File.separator + rawImageFile.getName()
             );
             try {
-                Files.createDirectories(imageFile.toPath());
                 ImageIO.write(image, "png", imageFile);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
