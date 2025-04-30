@@ -7,6 +7,7 @@ import de.jonas.notes.listener.NoteClickListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
+import de.jonas.notes.object.Notebook;
 import de.jonas.notes.object.component.RoundButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,13 +47,17 @@ public final class OverviewGui extends Gui implements Drawable {
     private final GridBagConstraints constraints = new GridBagConstraints();
     @NotNull
     private final JPanel notesPanel;
+    @NotNull
+    private final Notebook notebook;
 
 
-    public OverviewGui() {
+    public OverviewGui(@NotNull final Notebook notebook) {
         super("", WIDTH, HEIGHT);
         this.addDrawable(this);
         this.setSize(new Dimension(WIDTH, HEIGHT));
         this.setResizable(false);
+
+        this.notebook = notebook;
 
         final JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, WIDTH, HEIGHT);
@@ -92,7 +97,7 @@ public final class OverviewGui extends Gui implements Drawable {
 
             if (title == null || title.isEmpty()) return;
 
-            final Note note = new Note(title, LocalDateTime.now(), new ArrayList<>());
+            final Note note = new Note(title, LocalDateTime.now(), new ArrayList<>(), notebook);
             NotesHandler.saveNote(note);
             TextStyleHandler.saveTextStyle(note, note.getTextStyleInformation());
 
@@ -117,7 +122,7 @@ public final class OverviewGui extends Gui implements Drawable {
     }
 
     public void loadNotes() {
-        for (@NotNull final Note note : NotesHandler.getNotes()) {
+        for (@NotNull final Note note : NotesHandler.getNotes(notebook)) {
             addNoteButton(note);
         }
     }

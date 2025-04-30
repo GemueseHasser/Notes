@@ -2,6 +2,7 @@ package de.jonas.notes.handler;
 
 import de.jonas.notes.constant.FileType;
 import de.jonas.notes.object.Note;
+import de.jonas.notes.object.Notebook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,17 +25,17 @@ public final class NotesHandler {
 
 
     @NotNull
-    public static List<Note> getNotes() {
+    public static List<Note> getNotes(@NotNull final Notebook notebook) {
         final List<Note> notes = new ArrayList<>();
 
-        for (@NotNull final File noteFile : getNoteFiles()) {
+        for (@NotNull final File noteFile : getNoteFiles(notebook)) {
             try {
                 final List<String> lines = Files.readAllLines(noteFile.toPath());
                 final String title = lines.get(0);
                 final LocalDateTime dateTime = LocalDateTime.parse(lines.get(1), FORMATTER);
                 final List<String> noteLines = lines.subList(2, lines.size());
 
-                final Note note = new Note(title, dateTime, noteLines);
+                final Note note = new Note(title, dateTime, noteLines, notebook);
                 TextStyleHandler.loadTextStyle(note);
                 notes.add(note);
             } catch (@NotNull final IOException e) {
@@ -50,7 +51,7 @@ public final class NotesHandler {
     }
 
     public static boolean deleteNote(@NotNull final Note note) {
-        final File noteFile = getNoteFile(note.getDateTime());
+        final File noteFile = getNoteFile(note.getParentNotebook(), note.getDateTime());
         if (!noteFile.exists()) return true;
 
         return noteFile.delete();
@@ -58,7 +59,7 @@ public final class NotesHandler {
 
     public static void saveNote(@NotNull final Note note) {
         final File noteFile = new File(
-            FileType.RAW.getFile() + File.separator + getDateTimeText(note.getDateTime()) + ".txt"
+            FileType.RAW.getFile(note.getParentNotebook()) + File.separator + getDateTimeText(note.getDateTime()) + ".txt"
         );
         try {
             noteFile.createNewFile();
@@ -92,9 +93,9 @@ public final class NotesHandler {
     }
 
     @NotNull
-    private static List<File> getNoteFiles() {
+    private static List<File> getNoteFiles(@NotNull final Notebook notebook) {
         final List<File> notes = new ArrayList<>();
-        final File[] files = FileType.RAW.getFile().listFiles();
+        final File[] files = FileType.RAW.getFile(notebook).listFiles();
 
         if (files == null) return notes;
 
@@ -114,8 +115,11 @@ public final class NotesHandler {
     }
 
     @Nullable
-    private static File getNoteFile(@NotNull final LocalDateTime dateTime) {
-        final File noteFile = new File(FileType.RAW.getFile()+ File.separator + getDateTimeText(dateTime) + ".txt");
+    private static File getNoteFile(
+        @NotNull final Notebook notebook,
+        @NotNull final LocalDateTime dateTime
+    ) {
+        final File noteFile = new File(FileType.RAW.getFile(notebook)+ File.separator + getDateTimeText(dateTime) + ".txt");
 
         if (noteFile.exists()) return noteFile;
         return null;

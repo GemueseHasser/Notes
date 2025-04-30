@@ -144,7 +144,7 @@ public final class NoteGui extends Gui implements Drawable {
             graphics.dispose();
 
             final File imageFile = new File(
-                FileType.RESOURCES.getFile() + File.separator + rawImageFile.getName()
+                FileType.RESOURCES.getFile(note.getParentNotebook()) + File.separator + rawImageFile.getName()
             );
             try {
                 ImageIO.write(image, "png", imageFile);
@@ -296,7 +296,8 @@ public final class NoteGui extends Gui implements Drawable {
             final Note newNote = new Note(
                 titleField.getText(),
                 LocalDateTime.now(),
-                new ArrayList<>(Arrays.asList(textPane.getText().split("\n")))
+                new ArrayList<>(Arrays.asList(textPane.getText().split("\n"))),
+                note.getParentNotebook()
             );
 
             // imitate button unselect

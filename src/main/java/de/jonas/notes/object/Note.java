@@ -19,5 +19,7 @@ public final class Note {
     private final List<String> lines;
     @NotNull
     private final TextStyleInformation textStyleInformation = new TextStyleInformation();
+    @NotNull
+    private final Notebook parentNotebook;
 
 }
