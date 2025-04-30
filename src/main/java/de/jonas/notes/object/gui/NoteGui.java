@@ -117,7 +117,7 @@ public final class NoteGui extends Gui implements Drawable {
             final BufferedImage rawImage;
             try {
                 rawImage = ImageIO.read(rawImageFile);
-            } catch (@NotNull final IOException ignored) {
+            } catch (@NotNull final IOException | IllegalArgumentException ignored) {
                 return;
             }
 
@@ -290,7 +290,10 @@ public final class NoteGui extends Gui implements Drawable {
             textPane.paint(textImageGraphics);
             textImageGraphics.dispose();
 
-            PdfHandler.saveImageAsPdf(textImage, exportFile);
+            try {
+                PdfHandler.saveImageAsPdf(textImage, exportFile);
+            } catch (@NotNull final IllegalArgumentException ignored) {
+            }
         });
 
         return exportButton;
