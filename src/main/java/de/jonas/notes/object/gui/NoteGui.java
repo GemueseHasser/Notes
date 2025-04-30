@@ -96,6 +96,7 @@ public final class NoteGui extends Gui implements Drawable {
         titleField.addMouseListener(new CursorListener(this));
 
         final JToolBar utilityToolbar = new JToolBar();
+        utilityToolbar.addSeparator(new Dimension(30, 0));
         utilityToolbar.setFloatable(false);
 
         final RoundButton insertButton = new RoundButton("Bild einfügen", 10, this);
