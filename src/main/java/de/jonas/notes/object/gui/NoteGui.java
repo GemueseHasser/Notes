@@ -110,7 +110,7 @@ public final class NoteGui extends Gui implements Drawable {
             final BufferedImage rawImage;
             try {
                 rawImage = ImageIO.read(rawImageFile);
-            } catch (IOException ex) {
+            } catch (@NotNull final IOException ignored) {
                 return;
             }
 
@@ -148,7 +148,7 @@ public final class NoteGui extends Gui implements Drawable {
             );
             try {
                 ImageIO.write(image, "png", imageFile);
-            } catch (IOException ex) {
+            } catch (@NotNull final IOException ex) {
                 throw new RuntimeException(ex);
             }
 

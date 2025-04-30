@@ -1,6 +1,7 @@
 package de.jonas.notes.handler;
 
 import de.jonas.notes.Notes;
+import de.jonas.notes.constant.FileType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class NotesHandlerTest {
 
     @Test
     public void testFileSystemAccess() throws IOException {
-        final File testFile = new File(Notes.NOTES_FOLDER + File.separator + "test.txt");
+        final File testFile = new File(FileType.RAW.getFile() + File.separator + "test.txt");
         testFile.createNewFile();
         Assertions.assertTrue(testFile.canWrite());
         Assertions.assertTrue(testFile.canRead());
