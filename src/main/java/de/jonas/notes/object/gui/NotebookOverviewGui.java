@@ -23,13 +23,13 @@ import java.nio.file.Files;
 
 public final class NotebookOverviewGui extends OverviewGui {
 
-    public static final int NOTE_BUTTON_SIZE = 150;
+    public static final int NOTEBOOK_BUTTON_SIZE = 150;
     @NotNull
-    private static final Font NOTE_FONT = new Font("Arial", Font.PLAIN, 15);
+    private static final Font NOTEBOOK_TITLE_FONT = new Font("Arial", Font.PLAIN, 15);
     @NotNull
     private static final String TITLE = "Notizbücher";
     private static final int WIDTH = 800;
-    private static final int NOTES_COLUMN_COUNT = WIDTH / NOTE_BUTTON_SIZE - 1;
+    private static final int NOTEBOOKS_COLUMN_COUNT = WIDTH / NOTEBOOK_BUTTON_SIZE - 1;
 
 
     public NotebookOverviewGui() {
@@ -85,10 +85,10 @@ public final class NotebookOverviewGui extends OverviewGui {
 
 
     public void addNotebookButton(@NotNull final Notebook notebook) {
-        final BufferedImage notebookIcon = new BufferedImage(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage notebookIcon = new BufferedImage(NOTEBOOK_BUTTON_SIZE, NOTEBOOK_BUTTON_SIZE, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = Notes.getImageGraphics(notebookIcon);
-        g.drawImage(ImageType.NOTEBOOK_ICON.getImage(), 0, 0, NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE, null);
-        g.setFont(NOTE_FONT);
+        g.drawImage(ImageType.NOTEBOOK_ICON.getImage(), 0, 0, NOTEBOOK_BUTTON_SIZE, NOTEBOOK_BUTTON_SIZE, null);
+        g.setFont(NOTEBOOK_TITLE_FONT);
         g.setColor(Color.BLACK);
         g.drawString(
             notebook.getName(),
@@ -116,11 +116,11 @@ public final class NotebookOverviewGui extends OverviewGui {
             this
         );
 
-        button.setPreferredSize(new Dimension(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE));
+        button.setPreferredSize(new Dimension(NOTEBOOK_BUTTON_SIZE, NOTEBOOK_BUTTON_SIZE));
         button.addActionListener(new NotebookClickListener(notebook, this));
 
-        constraints.gridx = buttonsPanel.getComponentCount() % NOTES_COLUMN_COUNT;
-        constraints.gridy = buttonsPanel.getComponentCount() / NOTES_COLUMN_COUNT;
+        constraints.gridx = buttonsPanel.getComponentCount() % NOTEBOOKS_COLUMN_COUNT;
+        constraints.gridy = buttonsPanel.getComponentCount() / NOTEBOOKS_COLUMN_COUNT;
         buttonsPanel.add(button, constraints);
     }
 

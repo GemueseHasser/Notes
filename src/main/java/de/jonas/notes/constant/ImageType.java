@@ -1,5 +1,6 @@
 package de.jonas.notes.constant;
 
+import de.jonas.notes.object.gui.NoteOverviewGui;
 import de.jonas.notes.object.gui.NotebookOverviewGui;
 import de.jonas.notes.object.gui.OverviewGui;
 import lombok.Getter;
@@ -31,7 +32,8 @@ public enum ImageType {
     DELETE_NOTE_ICON("deleteNote.png", 150, 150),
     /** Der Typ des Bildes, welches im Option-Pane angezeigt wird, wenn man ein Bild einfügen möchte. */
     INSERT_IMAGE_ICON("insertImage.png", 150, 150),
-    NOTEBOOK_ICON("notebook.png", NotebookOverviewGui.NOTE_BUTTON_SIZE, NotebookOverviewGui.NOTE_BUTTON_SIZE);
+    NOTEBOOK_ICON("notebook.png", NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE, NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE),
+    NOTE_ICON("note.png", NoteOverviewGui.NOTE_BUTTON_SIZE, NoteOverviewGui.NOTE_BUTTON_SIZE);
     //</editor-fold>
 
 
