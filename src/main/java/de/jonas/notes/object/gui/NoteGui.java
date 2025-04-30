@@ -1,16 +1,11 @@
 package de.jonas.notes.object.gui;
 
-import com.itextpdf.io.image.ImageData;
-import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Image;
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.FileHandler;
 import de.jonas.notes.handler.NotesHandler;
+import de.jonas.notes.handler.PdfHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.CursorListener;
 import de.jonas.notes.listener.TextStyleInteractListener;
@@ -35,7 +30,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -46,7 +40,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,30 +181,18 @@ public final class NoteGui extends Gui implements Drawable {
                 new String[]{"pdf"}
             );
             assert exportFile != null;
-            try (final PdfWriter pdfWriter = new PdfWriter(exportFile)) {
-                final PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-                final Document document = new Document(pdfDocument);
+            final BufferedImage textImage = new BufferedImage(
+                textPane.getWidth(),
+                textPane.getHeight(),
+                BufferedImage.TYPE_INT_ARGB
+            );
+            final Graphics2D textImageGraphics = getImageGraphics(textImage);
+            textPane.paint(textImageGraphics);
+            textImageGraphics.dispose();
 
-                final BufferedImage textImage = new BufferedImage(
-                    textPane.getWidth(),
-                    textPane.getHeight(),
-                    BufferedImage.TYPE_INT_ARGB
-                );
-                final Graphics2D g = textImage.createGraphics();
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                textPane.paint(g);
-                g.dispose();
-
-                final ImageData imageData = ImageDataFactory.create(textImage, Color.WHITE);
-                final Image image = new Image(imageData);
-
-                document.add(image);
-                document.close();
-            } catch (@NotNull final IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            PdfHandler.saveImageAsPdf(textImage, exportFile);
         });
+
         return exportButton;
     }
 
@@ -282,4 +263,13 @@ public final class NoteGui extends Gui implements Drawable {
         );
     }
     //</editor-fold>
+
+
+    @NotNull
+    public static Graphics2D getImageGraphics(@NotNull final BufferedImage image) {
+        final Graphics2D g = image.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        return g;
+    }
 }
