@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.awt.Dimension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public final class NoteOverviewGui extends OverviewGui {
     }
 
     @Override
-    public void loadButtons(@NotNull JPanel buttonsPanel) {
+    public void loadButtons(@NotNull final JPanel buttonsPanel) {
         for (@NotNull final Note note : NotesHandler.getNotes(notebook)) {
             addNoteButton(note);
         }

@@ -259,7 +259,7 @@ public final class NoteGui extends Gui implements Drawable {
     }
 
     @NotNull
-    private JPanel getNoteOptionPanel(final JTextField titleField) {
+    private JPanel getNoteOptionPanel(@NotNull final JTextField titleField) {
         final JPanel noteOptionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         final RoundButton saveButton = getSaveButton(titleField);
         final RoundButton deleteButton = getDeleteButton();

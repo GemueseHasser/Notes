@@ -119,7 +119,7 @@ public final class NotesHandler {
         @NotNull final Notebook notebook,
         @NotNull final LocalDateTime dateTime
     ) {
-        final File noteFile = new File(FileType.RAW.getFile(notebook)+ File.separator + getDateTimeText(dateTime) + ".txt");
+        final File noteFile = new File(FileType.RAW.getFile(notebook) + File.separator + getDateTimeText(dateTime) + ".txt");
 
         if (noteFile.exists()) return noteFile;
         return null;

@@ -25,7 +25,10 @@ public final class TextStyleHandler {
         styleFile.delete();
     }
 
-    public static void saveTextStyle(@NotNull final Note note, @NotNull final TextStyleInformation style) {
+    public static void saveTextStyle(
+        @NotNull final Note note,
+        @NotNull final TextStyleInformation style
+    ) {
         final File styleFile = new File(
             FileType.STYLE.getFile(note.getParentNotebook()) + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
         );

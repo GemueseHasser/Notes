@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 public final class NotebookHandler {
 
+    @NotNull
     public static List<Notebook> loadNotebooks() {
         final List<Notebook> notebooks = new ArrayList<>();
         final File notebooksDir = new File("Notes");

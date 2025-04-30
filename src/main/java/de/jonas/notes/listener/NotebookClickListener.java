@@ -19,7 +19,7 @@ public final class NotebookClickListener implements ActionListener {
 
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(@NotNull final ActionEvent e) {
         final NoteOverviewGui noteOverviewGui = new NoteOverviewGui(notebook);
         noteOverviewGui.open();
         parentOverviewGui.dispose();

@@ -33,7 +33,12 @@ public final class PdfHandler {
             for (int i = 0; i < pageAmount; i++) {
                 final int remainingHeight = image.getHeight() - (i * pageHeight);
                 final int currentImageHeight = Math.min(remainingHeight, pageHeight);
-                final BufferedImage currentPageImage = image.getSubimage(0, i * pageHeight, pageWidth, currentImageHeight);
+                final BufferedImage currentPageImage = image.getSubimage(
+                    0,
+                    i * pageHeight,
+                    pageWidth,
+                    currentImageHeight
+                );
                 final ImageData imageData = ImageDataFactory.create(currentPageImage, Color.WHITE);
                 final Image pdfImage = new Image(imageData);
 

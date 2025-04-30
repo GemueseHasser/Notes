@@ -35,7 +35,7 @@ public final class NotebookOverviewGui extends OverviewGui {
 
 
     @Override
-    public void loadButtons(@NotNull JPanel buttonsPanel) {
+    public void loadButtons(@NotNull final JPanel buttonsPanel) {
         for (@NotNull final Notebook note : NotebookHandler.loadNotebooks()) {
             addNotebookButton(note);
         }
