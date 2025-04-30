@@ -333,7 +333,7 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.saveTextStyle(newNote, note.getTextStyleInformation());
             NotesHandler.deleteNote(note);
             TextStyleHandler.deleteTextStyle(note);
-            overviewGui.reloadNotes();
+            overviewGui.reloadButtons();
 
             this.dispose();
         });
@@ -356,7 +356,7 @@ public final class NoteGui extends Gui implements Drawable {
             if (delete == JOptionPane.NO_OPTION) return;
 
             if (NotesHandler.deleteNote(note)) {
-                overviewGui.reloadNotes();
+                overviewGui.reloadButtons();
             }
 
             TextStyleHandler.deleteTextStyle(note);
