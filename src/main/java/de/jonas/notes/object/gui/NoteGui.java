@@ -1,6 +1,5 @@
 package de.jonas.notes.object.gui;
 
-import de.jonas.notes.Notes;
 import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
@@ -76,14 +75,20 @@ public final class NoteGui extends Gui implements Drawable {
     @Getter
     @NotNull
     private final Note note;
+    @NotNull
+    private final OverviewGui overviewGui;
 
 
-    public NoteGui(@NotNull final Note note) throws BadLocationException {
+    public NoteGui(
+        @NotNull final OverviewGui overviewGui,
+        @NotNull final Note note
+    ) throws BadLocationException {
         super(note.getTitle(), WIDTH, HEIGHT);
         this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
 
+        this.overviewGui = overviewGui;
         this.note = note;
 
         final JPanel titlePanel = new JPanel(new GridLayout(2, 1));
@@ -328,7 +333,7 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.saveTextStyle(newNote, note.getTextStyleInformation());
             NotesHandler.deleteNote(note);
             TextStyleHandler.deleteTextStyle(note);
-            Notes.getOverviewGui().reloadNotes();
+            overviewGui.reloadNotes();
 
             this.dispose();
         });
@@ -351,7 +356,7 @@ public final class NoteGui extends Gui implements Drawable {
             if (delete == JOptionPane.NO_OPTION) return;
 
             if (NotesHandler.deleteNote(note)) {
-                Notes.getOverviewGui().reloadNotes();
+                overviewGui.reloadNotes();
             }
 
             TextStyleHandler.deleteTextStyle(note);

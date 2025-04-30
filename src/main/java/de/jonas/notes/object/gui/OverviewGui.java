@@ -134,7 +134,7 @@ public final class OverviewGui extends Gui implements Drawable {
             this
         );
         button.setPreferredSize(new Dimension(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE));
-        button.addActionListener(new NoteClickListener(note));
+        button.addActionListener(new NoteClickListener(note, this));
 
         constraints.gridx = notesPanel.getComponentCount() % NOTES_COLUMN_COUNT;
         constraints.gridy = notesPanel.getComponentCount() / NOTES_COLUMN_COUNT;
