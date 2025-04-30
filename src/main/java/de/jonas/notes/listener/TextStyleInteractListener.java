@@ -30,6 +30,12 @@ public final class TextStyleInteractListener implements ActionListener {
         // check if user is focusing the text pane
         if (!textPane.isFocusOwner()) {
             if (!toggleButton.isSelected()) {
+                final LinkedList<TextStyleInformation.StyleInformation> styleInformations = textStyleInformation
+                    .getStyles()
+                    .get(styleType);
+
+                if (styleInformations == null) return;
+
                 textStyleInformation.getStyles().get(styleType).getLast().setEndPosition(textPane.getText().length());
                 return;
             }
