@@ -1,5 +1,6 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
@@ -45,7 +46,9 @@ import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -334,6 +337,12 @@ public final class NoteGui extends Gui implements Drawable {
             NotesHandler.deleteNote(note);
             TextStyleHandler.deleteTextStyle(note);
             overviewGui.reloadButtons();
+
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Notes.INFO_FILE, true))) {
+                writer.write(note.getParentNotebook() + ":" + LocalDateTime.now().format(Notes.FORMATTER) + "\n");
+            } catch (@NotNull final IOException ex) {
+                throw new RuntimeException(ex);
+            }
 
             this.dispose();
         });

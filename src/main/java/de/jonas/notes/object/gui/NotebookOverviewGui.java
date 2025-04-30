@@ -1,5 +1,6 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotebookHandler;
 import de.jonas.notes.listener.NotebookClickListener;
@@ -11,9 +12,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public final class NotebookOverviewGui extends OverviewGui {
@@ -68,6 +72,12 @@ public final class NotebookOverviewGui extends OverviewGui {
 
         try {
             Files.createDirectories(notebookFile.toPath());
+        } catch (@NotNull final IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Notes.INFO_FILE, true))) {
+            writer.write(name + ":" + LocalDateTime.now().format(FORMATTER) + "\n");
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);
         }

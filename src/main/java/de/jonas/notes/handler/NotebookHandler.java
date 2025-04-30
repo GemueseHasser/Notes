@@ -1,9 +1,12 @@
 package de.jonas.notes.handler;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.object.Notebook;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,28 +22,17 @@ public final class NotebookHandler {
 
             final String notebookName = notebookFile.getName();
 
-            LocalDateTime time = null;
+            try {
+                for (@NotNull final String line : Files.readAllLines(Notes.INFO_FILE.toPath())) {
+                    final String[] parts = line.split(":", 2);
 
-            final File rawFolder = new File(notebooksDir + File.separator + notebookName + File.separator + "Raw");
-
-            if (!rawFolder.exists()) {
-                notebooks.add(new Notebook(notebookName, LocalDateTime.now()));
-                continue;
-            }
-
-            for (@NotNull final File rawFile : rawFolder.listFiles()) {
-                if (!rawFile.getName().endsWith(".txt")) continue;
-
-                if (time == null) {
-                    time = NotesHandler.getDateTime(rawFile.getName().replace(".txt", ""));
-                    continue;
+                    if (parts[0].equals(notebookName)) {
+                        notebooks.add(new Notebook(parts[0], LocalDateTime.parse(parts[1], Notes.FORMATTER)));
+                    }
                 }
-
-                if (time.isAfter(NotesHandler.getDateTime(rawFile.getName().replace(".txt", "")))) continue;
-                time = NotesHandler.getDateTime(rawFile.getName().replace(".txt", ""));
+            } catch (@NotNull final IOException e) {
+                throw new RuntimeException(e);
             }
-
-            notebooks.add(new Notebook(notebookName, time == null ? LocalDateTime.now() : time));
         }
 
         return notebooks;
