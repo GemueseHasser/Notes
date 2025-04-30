@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,6 +47,7 @@ import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,14 +100,60 @@ public final class NoteGui extends Gui implements Drawable {
 
         final RoundButton insertButton = new RoundButton("Bild einfügen", 10, this);
         insertButton.addActionListener(e -> {
-            final File imageFile = FileHandler.getFile("Bild auswählen...", "Auswählen", new String[]{"png", "jpg"});
-            note.getTextStyleInformation().getImages().put(textPane.getCaretPosition(), imageFile);
-            assert imageFile != null;
+            final File rawImageFile = FileHandler.getFile(
+                "Bild auswählen...",
+                "Auswählen",
+                new String[]{"png", "jpg"}
+            );
+            assert rawImageFile != null;
+            final BufferedImage rawImage;
             try {
-                textPane.insertIcon(new ImageIcon(ImageIO.read(imageFile)));
-            } catch (@NotNull final IOException ex) {
+                rawImage = ImageIO.read(rawImageFile);
+            } catch (IOException ex) {
+                return;
+            }
+
+            final JTextField widthField = new JTextField(5);
+            final JTextField heightField = new JTextField(5);
+
+            final JPanel imageSizePanel = new JPanel();
+            imageSizePanel.add(new JLabel("Breite: "));
+            imageSizePanel.add(widthField);
+            imageSizePanel.add(new JLabel("Höhe: "));
+            imageSizePanel.add(heightField);
+
+            final int insertImageResult = JOptionPane.showOptionDialog(
+                null,
+                imageSizePanel,
+                "Bild einfügen",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()),
+                new String[]{"Abbrechen", "Einfügen"},
+                "Abbrechen"
+            );
+
+            if (insertImageResult == 0) return;
+
+            final int width = Integer.parseInt(widthField.getText());
+            final int height = Integer.parseInt(heightField.getText());
+            final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            final Graphics2D graphics = image.createGraphics();
+            graphics.drawImage(rawImage, 0, 0, width, height, null);
+            graphics.dispose();
+
+            final File imageFile = new File(
+                Notes.NOTES_FOLDER + File.separator + "Resources" + File.separator + rawImageFile.getName()
+            );
+            try {
+                Files.createDirectories(imageFile.toPath());
+                ImageIO.write(image, "png", imageFile);
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+
+            note.getTextStyleInformation().getImages().put(textPane.getCaretPosition(), imageFile);
+            textPane.insertIcon(new ImageIcon(image));
         });
 
         utilityToolbar.add(insertButton);
@@ -326,6 +374,7 @@ public final class NoteGui extends Gui implements Drawable {
     //</editor-fold>
 
 
+    //<editor-fold desc="utility">
     @NotNull
     public static Graphics2D getImageGraphics(@NotNull final BufferedImage image) {
         final Graphics2D g = image.createGraphics();
@@ -333,4 +382,5 @@ public final class NoteGui extends Gui implements Drawable {
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         return g;
     }
+    //</editor-fold>
 }
