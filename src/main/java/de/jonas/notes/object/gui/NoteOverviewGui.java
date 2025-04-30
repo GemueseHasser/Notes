@@ -2,6 +2,7 @@ package de.jonas.notes.object.gui;
 
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
+import de.jonas.notes.handler.NotebookHandler;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.NoteClickListener;
@@ -77,6 +78,8 @@ public final class NoteOverviewGui extends OverviewGui {
 
         super.reloadButtons();
         this.revalidate();
+
+        NotebookHandler.setLastAccessTimestamp(notebook.getName());
     }
 
     @Override

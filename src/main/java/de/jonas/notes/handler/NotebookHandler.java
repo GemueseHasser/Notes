@@ -4,7 +4,9 @@ import de.jonas.notes.Notes;
 import de.jonas.notes.object.Notebook;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
@@ -36,6 +38,28 @@ public final class NotebookHandler {
         }
 
         return notebooks;
+    }
+
+    public static void setLastAccessTimestamp(@NotNull final String notebookName) {
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Notes.INFO_FILE, true))) {
+            // save lines
+            final List<String> lines = Files.readAllLines(Notes.INFO_FILE.toPath());
+
+            // delete info content
+            new FileWriter(Notes.INFO_FILE, false).close();
+
+            // write updated info content
+            for (@NotNull final String infoLine : lines) {
+                final String[] parts = infoLine.split(":", 2);
+                if (parts[0].equals(notebookName)) continue;
+
+                writer.write(infoLine + "\n");
+            }
+
+            writer.write(notebookName + ":" + LocalDateTime.now().format(Notes.FORMATTER) + "\n");
+        } catch (@NotNull final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -1,10 +1,10 @@
 package de.jonas.notes.object.gui;
 
-import de.jonas.notes.Notes;
 import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
 import de.jonas.notes.handler.FileHandler;
+import de.jonas.notes.handler.NotebookHandler;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.PdfHandler;
 import de.jonas.notes.handler.TextStyleHandler;
@@ -35,6 +35,7 @@ import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -46,9 +47,7 @@ import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -338,11 +337,7 @@ public final class NoteGui extends Gui implements Drawable {
             TextStyleHandler.deleteTextStyle(note);
             overviewGui.reloadButtons();
 
-            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Notes.INFO_FILE, true))) {
-                writer.write(note.getParentNotebook() + ":" + LocalDateTime.now().format(Notes.FORMATTER) + "\n");
-            } catch (@NotNull final IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            NotebookHandler.setLastAccessTimestamp(note.getParentNotebook().getName());
 
             this.dispose();
         });
