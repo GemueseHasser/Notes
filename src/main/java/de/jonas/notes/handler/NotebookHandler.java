@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class NotebookHandler {
 
@@ -37,7 +38,10 @@ public final class NotebookHandler {
             }
         }
 
-        return notebooks;
+        return notebooks.stream()
+            .sorted((date1, date2) -> date1.getLastAccess().isBefore(date2.getLastAccess()) ? 1 :
+                                      date1.getLastAccess().equals(date2.getLastAccess()) ? 0 : -1
+            ).collect(Collectors.toList());
     }
 
     public static void setLastAccessTimestamp(@NotNull final String notebookName) {
