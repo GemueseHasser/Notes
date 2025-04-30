@@ -1,5 +1,6 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.handler.NotebookHandler;
 import de.jonas.notes.listener.NotebookClickListener;
@@ -11,20 +12,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.format.DateTimeFormatter;
 
 public final class NotebookOverviewGui extends OverviewGui {
 
+    public static final int NOTE_BUTTON_SIZE = 150;
     @NotNull
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final Font NOTE_FONT = new Font("Arial", Font.PLAIN, 15);
     @NotNull
     private static final String TITLE = "Notizbücher";
     private static final int WIDTH = 800;
-    private static final int NOTE_BUTTON_SIZE = 150;
     private static final int NOTES_COLUMN_COUNT = WIDTH / NOTE_BUTTON_SIZE - 1;
 
 
@@ -81,11 +85,37 @@ public final class NotebookOverviewGui extends OverviewGui {
 
 
     public void addNotebookButton(@NotNull final Notebook notebook) {
+        final BufferedImage notebookIcon = new BufferedImage(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = Notes.getImageGraphics(notebookIcon);
+        g.drawImage(ImageType.NOTEBOOK_ICON.getImage(), 0, 0, NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE, null);
+        g.setFont(NOTE_FONT);
+        g.setColor(Color.BLACK);
+        g.drawString(
+            notebook.getName(),
+            notebookIcon.getWidth() / 2 - g.getFontMetrics().stringWidth(notebook.getName()) / 2,
+            35
+        );
+
+        final String[] lastAccess = Notes.FORMATTER.format(notebook.getLastAccess()).split(" ");
+
+        g.drawString(
+            lastAccess[0],
+            notebookIcon.getWidth() / 2 - g.getFontMetrics().stringWidth(lastAccess[0]) / 2,
+            90
+        );
+        g.drawString(
+            lastAccess[1],
+            notebookIcon.getWidth() / 2 - g.getFontMetrics().stringWidth(lastAccess[1]) / 2,
+            115
+        );
+        g.dispose();
+
         final RoundButton button = new RoundButton(
-            "<html>" + notebook.getName() + "<br><br>" + FORMATTER.format(notebook.getLastAccess()),
-            30,
+            notebookIcon,
+            60,
             this
         );
+
         button.setPreferredSize(new Dimension(NOTE_BUTTON_SIZE, NOTE_BUTTON_SIZE));
         button.addActionListener(new NotebookClickListener(notebook, this));
 

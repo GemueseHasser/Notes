@@ -5,6 +5,7 @@ import de.jonas.notes.object.Gui;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import java.awt.Color;
@@ -14,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * Ein {@link RoundButton} stellt eine Instanz eines {@link JButton Buttons} dar, mit dem Unterschied, dass dieser
@@ -57,6 +59,21 @@ public final class RoundButton extends JButton {
         super.setContentAreaFilled(false);
         super.setFocusable(false);
         super.setBackground(Color.LIGHT_GRAY);
+        super.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        super.addMouseListener(new CursorListener(parent));
+    }
+
+    public RoundButton(
+        @NotNull final BufferedImage image,
+        @Range(from = 0, to = Integer.MAX_VALUE) final int rounding,
+        @NotNull final Gui parent
+    ) {
+        super();
+        this.rounding = rounding;
+
+        super.setIcon(new ImageIcon(image));
+        super.setContentAreaFilled(false);
+        super.setFocusable(false);
         super.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         super.addMouseListener(new CursorListener(parent));
     }

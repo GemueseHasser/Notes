@@ -65,8 +65,8 @@ public abstract class OverviewGui extends Gui implements Drawable {
         scrollPane.setBounds(
             0,
             BUTTONS_MARGIN_TOP,
-            WIDTH - 18,
-            HEIGHT - 2 * BUTTONS_MARGIN_TOP - this.getInsets().top
+            WIDTH,
+            HEIGHT - 2 * BUTTONS_MARGIN_TOP
         );
 
         constraints.insets = new Insets(5, 5, 5, 5);

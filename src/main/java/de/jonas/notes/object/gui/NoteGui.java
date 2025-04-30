@@ -1,5 +1,6 @@
 package de.jonas.notes.object.gui;
 
+import de.jonas.notes.Notes;
 import de.jonas.notes.constant.FileType;
 import de.jonas.notes.constant.ImageType;
 import de.jonas.notes.constant.TextStyleType;
@@ -43,7 +44,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
@@ -286,7 +286,7 @@ public final class NoteGui extends Gui implements Drawable {
                 textPane.getHeight(),
                 BufferedImage.TYPE_INT_ARGB
             );
-            final Graphics2D textImageGraphics = getImageGraphics(textImage);
+            final Graphics2D textImageGraphics = Notes.getImageGraphics(textImage);
             textPane.paint(textImageGraphics);
             textImageGraphics.dispose();
 
@@ -381,17 +381,6 @@ public final class NoteGui extends Gui implements Drawable {
             scrollTextPane.getX() + 10,
             scrollTextPane.getY() + g.getFontMetrics().getAscent()
         );
-    }
-    //</editor-fold>
-
-
-    //<editor-fold desc="utility">
-    @NotNull
-    public static Graphics2D getImageGraphics(@NotNull final BufferedImage image) {
-        final Graphics2D g = image.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        return g;
     }
     //</editor-fold>
 }
