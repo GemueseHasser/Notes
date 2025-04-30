@@ -28,7 +28,6 @@ public final class NotebookOverviewGui extends OverviewGui {
     private static final Font NOTEBOOK_TITLE_FONT = new Font("Arial", Font.PLAIN, 15);
     @NotNull
     private static final String TITLE = "Notizbücher";
-    private static final int WIDTH = 800;
     private static final int NOTEBOOKS_COLUMN_COUNT = WIDTH / NOTEBOOK_BUTTON_SIZE - 1;
 
 

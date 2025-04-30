@@ -354,7 +354,7 @@ public final class NoteGui extends Gui implements Drawable {
                 "Notiz löschen",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                new ImageIcon(ImageType.DELETE_NOTE_ICON.getImage())
+                new ImageIcon(ImageType.DELETE_ICON.getImage())
             );
 
             if (delete == JOptionPane.NO_OPTION) return;

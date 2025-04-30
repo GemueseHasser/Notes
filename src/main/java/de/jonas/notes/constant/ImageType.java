@@ -28,12 +28,13 @@ public enum ImageType {
     ADD_NOTE_ICON("addButton.png", OverviewGui.CREATE_BUTTON_SIZE, OverviewGui.CREATE_BUTTON_SIZE),
     /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine neue Notiz erstellt. */
     CREATE_NOTE_ICON("createNote.png", 130, 150),
-    /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man eine Notiz löschen möchte. */
-    DELETE_NOTE_ICON("deleteNote.png", 150, 150),
+    /** Der Typ des Bildes, welcher im Option-Pane angezeigt wird, wenn man etwas löschen möchte. */
+    DELETE_ICON("deleteNote.png", 150, 150),
     /** Der Typ des Bildes, welches im Option-Pane angezeigt wird, wenn man ein Bild einfügen möchte. */
     INSERT_IMAGE_ICON("insertImage.png", 150, 150),
     NOTEBOOK_ICON("notebook.png", NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE, NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE),
-    NOTE_ICON("note.png", NoteOverviewGui.NOTE_BUTTON_SIZE, NoteOverviewGui.NOTE_BUTTON_SIZE);
+    NOTE_ICON("note.png", NoteOverviewGui.NOTE_BUTTON_SIZE, NoteOverviewGui.NOTE_BUTTON_SIZE),
+    DELETE_NOTEBOOK_ICON("deleteNotebook.png", 70, 70);
     //</editor-fold>
 
 

@@ -61,6 +61,16 @@ public final class FileHandler {
 
         return null;
     }
+
+    public static void deleteDirectory(@NotNull final File file) {
+        if (file.isDirectory()) {
+            for (@NotNull final File subFile : file.listFiles()) {
+                deleteDirectory(subFile);
+            }
+        }
+
+        file.delete();
+    }
     //</editor-fold>
 
 }

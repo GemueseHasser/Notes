@@ -2,6 +2,7 @@ package de.jonas.notes.object.gui;
 
 import de.jonas.notes.Notes;
 import de.jonas.notes.constant.ImageType;
+import de.jonas.notes.handler.FileHandler;
 import de.jonas.notes.handler.NotebookHandler;
 import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.TextStyleHandler;
@@ -21,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -29,7 +31,6 @@ public final class NoteOverviewGui extends OverviewGui {
     @NotNull
     private static final Font NOTE_TITLE_FONT = new Font("Arial", Font.PLAIN, 13);
     public static final int NOTE_BUTTON_SIZE = 150;
-    private static final int WIDTH = 800;
     private static final int NOTES_COLUMN_COUNT = WIDTH / NOTE_BUTTON_SIZE - 1;
 
 
@@ -42,6 +43,32 @@ public final class NoteOverviewGui extends OverviewGui {
         this.notebook = notebook;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         super.loadOverviewGui();
+
+        final RoundButton deleteButton = new RoundButton(ImageType.DELETE_NOTEBOOK_ICON.getImage(), 100, this);
+        deleteButton.setBounds(
+            (int) (WIDTH - CREATE_BUTTON_SIZE * 2.5),
+            HEIGHT - CREATE_BUTTON_SIZE - CREATE_BUTTON_MARGIN_BOTTOM,
+            CREATE_BUTTON_SIZE,
+            CREATE_BUTTON_SIZE
+        );
+        deleteButton.addActionListener(e -> {
+            final int delete = JOptionPane.showConfirmDialog(
+                null,
+                "Möchtest du dieses Notizbuch wirklich löschen?",
+                "Notizbuch löschen",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                new ImageIcon(ImageType.DELETE_ICON.getImage())
+            );
+
+            if (delete == JOptionPane.NO_OPTION) return;
+
+            final File notebookFile = new File("Notes" + File.separator + notebook.getName());
+            if (notebookFile.exists()) FileHandler.deleteDirectory(notebookFile);
+            this.dispose();
+        });
+
+        super.addTopLayerComponent(deleteButton);
     }
 
     public void addNoteButton(@NotNull final Note note) {
