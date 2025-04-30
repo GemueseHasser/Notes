@@ -128,7 +128,7 @@ public final class NoteGui extends Gui implements Drawable {
                 "Bild einfügen",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
-                new ImageIcon(ImageType.ADD_NOTE_ICON.getImage()),
+                new ImageIcon(ImageType.INSERT_IMAGE_ICON.getImage()),
                 new String[]{"Abbrechen", "Einfügen"},
                 "Abbrechen"
             );
@@ -151,7 +151,8 @@ public final class NoteGui extends Gui implements Drawable {
                 throw new RuntimeException(ex);
             }
 
-            note.getTextStyleInformation().getImages().put(textPane.getCaretPosition(), imageFile);
+            final int position = textPane.isFocusOwner() ? textPane.getCaretPosition() : textPane.getText().length();
+            note.getTextStyleInformation().getImages().put(position, imageFile);
             textPane.insertIcon(new ImageIcon(image));
         });
 
