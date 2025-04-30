@@ -24,7 +24,7 @@ public abstract class OverviewGui extends Gui implements Drawable {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 20);
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
-    private static final int NOTES_MARGIN_TOP = 40;
+    private static final int BUTTONS_MARGIN_TOP = 40;
     private static final int CREATE_BUTTON_MARGIN_BOTTOM = 50;
 
 
@@ -64,9 +64,9 @@ public abstract class OverviewGui extends Gui implements Drawable {
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(
             0,
-            NOTES_MARGIN_TOP,
+            BUTTONS_MARGIN_TOP,
             WIDTH - 18,
-            HEIGHT - 2 * NOTES_MARGIN_TOP - this.getInsets().top
+            HEIGHT - 2 * BUTTONS_MARGIN_TOP - this.getInsets().top
         );
 
         constraints.insets = new Insets(5, 5, 5, 5);
@@ -105,7 +105,7 @@ public abstract class OverviewGui extends Gui implements Drawable {
             this.getWidth() / 2 - g.getFontMetrics().stringWidth(title) / 2,
             5 + g.getFontMetrics().getAscent()
         );
-        g.drawLine(0, NOTES_MARGIN_TOP - 2, this.getWidth(), NOTES_MARGIN_TOP - 2);
+        g.drawLine(0, BUTTONS_MARGIN_TOP - 2, this.getWidth(), BUTTONS_MARGIN_TOP - 2);
 
         if (buttonsPanel.getComponentCount() > 0) return;
 

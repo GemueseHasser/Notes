@@ -2,6 +2,7 @@ package de.jonas.notes.object;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,8 @@ public final class Notebook {
 
     @NotNull
     private final String name;
+    @Setter
     @NotNull
-    private final LocalDateTime dateTime;
+    private LocalDateTime lastAccess;
 
 }
