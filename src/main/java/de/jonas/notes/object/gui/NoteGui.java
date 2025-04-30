@@ -18,6 +18,8 @@ import de.jonas.notes.object.component.RoundToggleButton;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,7 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -35,11 +39,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,12 +84,34 @@ public final class NoteGui extends Gui implements Drawable {
 
         this.note = note;
 
+        final JPanel titlePanel = new JPanel(new GridLayout(2, 1));
+
         final JTextField titleField = new JTextField(note.getTitle());
         titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
         titleField.setPreferredSize(new Dimension(WIDTH, 50));
         titleField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         titleField.addMouseListener(new CursorListener(this));
+
+        final JToolBar utilityToolbar = new JToolBar();
+        utilityToolbar.setFloatable(false);
+
+        final RoundButton insertButton = new RoundButton("Bild einfügen", 10, this);
+        insertButton.addActionListener(e -> {
+            final File imageFile = FileHandler.getFile("Bild auswählen...", "Auswählen", new String[]{"png", "jpg"});
+            note.getTextStyleInformation().getImages().put(textPane.getCaretPosition(), imageFile);
+            assert imageFile != null;
+            try {
+                textPane.insertIcon(new ImageIcon(ImageIO.read(imageFile)));
+            } catch (@NotNull final IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        utilityToolbar.add(insertButton);
+
+        titlePanel.add(titleField);
+        titlePanel.add(utilityToolbar);
 
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
@@ -103,9 +131,25 @@ public final class NoteGui extends Gui implements Drawable {
             textPane.setText(textPane.getText() + line + "\n");
         }
 
-        // format text
+        // load images
+        for (@NotNull final Map.Entry<Integer, File> imageEntry : note.getTextStyleInformation().getImages().entrySet()) {
+            try {
+                final int position = imageEntry.getKey();
+                final BufferedImage image = ImageIO.read(imageEntry.getValue());
+
+                final String before = textPane.getText().substring(0, position);
+                final String after = textPane.getText().substring(position);
+
+                textPane.setText(before);
+                textPane.insertIcon(new ImageIcon(image));
+                textPane.getDocument().insertString(position + 1, after, null);
+            } catch (@NotNull final IOException ignored) {
+            }
+        }
+
         final StyledDocument document = textPane.getStyledDocument();
 
+        // format text
         for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
             final TextStyleType styleType = styleEntry.getKey();
 
@@ -124,8 +168,8 @@ public final class NoteGui extends Gui implements Drawable {
 
         if (note.getLines().isEmpty()) textPane.setText("");
 
-        final JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
-        toolBar.setFloatable(false);
+        final JToolBar styleToolbar = new JToolBar(JToolBar.VERTICAL);
+        styleToolbar.setFloatable(false);
 
         for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
@@ -145,16 +189,16 @@ public final class NoteGui extends Gui implements Drawable {
             }
 
             styleButtons.add(toggleButton);
-            toolBar.add(toggleButton);
-            toolBar.addSeparator();
+            styleToolbar.add(toggleButton);
+            styleToolbar.addSeparator();
         }
 
         final JPanel noteOptionPanel = getNoteOptionPanel(titleField);
 
-        this.add(titleField, BorderLayout.PAGE_START);
+        this.add(titlePanel, BorderLayout.PAGE_START);
         this.add(scrollTextPane, BorderLayout.CENTER);
         this.add(noteOptionPanel, BorderLayout.SOUTH);
-        this.add(toolBar, BorderLayout.WEST);
+        this.add(styleToolbar, BorderLayout.WEST);
         this.pack();
     }
 
@@ -211,6 +255,23 @@ public final class NoteGui extends Gui implements Drawable {
                 if (!styleButton.isSelected()) continue;
                 styleButton.setSelected(false);
                 ((TextStyleInteractListener) styleButton.getActionListeners()[0]).interactAction();
+            }
+
+            final List<Integer> removedImagePositions = new ArrayList<>();
+
+            // check removed images
+            for (final int imagePosition : note.getTextStyleInformation().getImages().keySet()) {
+                final Element element = textPane.getStyledDocument().getCharacterElement(imagePosition);
+                final Icon icon = StyleConstants.getIcon(element.getAttributes());
+
+                if (icon == null) {
+                    removedImagePositions.add(imagePosition);
+                }
+            }
+
+            // remove removed images
+            for (final int imagePosition : removedImagePositions) {
+                note.getTextStyleInformation().getImages().remove(imagePosition);
             }
 
             NotesHandler.saveNote(newNote);

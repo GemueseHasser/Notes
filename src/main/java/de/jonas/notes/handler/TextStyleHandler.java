@@ -36,6 +36,7 @@ public final class TextStyleHandler {
         }
 
         try (@NotNull final BufferedWriter writer = new BufferedWriter(new FileWriter(styleFile, false))) {
+            // save text format
             for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : style.getStyles().entrySet()) {
                 final String styleName = styleEntry.getKey().name();
 
@@ -47,6 +48,14 @@ public final class TextStyleHandler {
 
                     writer.write(styleName + ":" + startPosition + ":" + endPosition + "\n");
                 }
+            }
+
+            // save images
+            for (@NotNull final Map.Entry<Integer, File> imageEntry : style.getImages().entrySet()) {
+                final int startPosition = imageEntry.getKey();
+                final File imageFile = imageEntry.getValue();
+
+                writer.write("IMAGE:" + startPosition + ":" + imageFile.getAbsoluteFile() + "\n");
             }
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);
@@ -65,14 +74,24 @@ public final class TextStyleHandler {
 
         try {
             for (@NotNull final String line : Files.readAllLines(styleFile.toPath())) {
-                final String[] parts = line.split(":");
+                final String[] parts = line.split(":", 3);
+
+                final TextStyleInformation information = note.getTextStyleInformation();
+
+                // load image
+                if (parts[0].equals("IMAGE")) {
+                    final int position = Integer.parseInt(parts[1]);
+                    final String path = parts[2];
+
+                    information.getImages().put(position, new File(path));
+                    continue;
+                }
+
                 if (parts.length != 3) continue;
 
                 final TextStyleType styleType = TextStyleType.valueOf(parts[0]);
                 final int startPosition = Integer.parseInt(parts[1]);
                 final int endPosition = Integer.parseInt(parts[2]);
-
-                final TextStyleInformation information = note.getTextStyleInformation();
 
                 if (!information.getStyles().containsKey(styleType)) {
                     information.getStyles().put(styleType, new LinkedList<>());
