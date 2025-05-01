@@ -10,11 +10,9 @@ import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.PdfHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.CursorListener;
-import de.jonas.notes.listener.TextStyleInteractListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
-import de.jonas.notes.object.TextStyleInformation;
 import de.jonas.notes.object.component.RoundButton;
 import de.jonas.notes.object.component.RoundToggleButton;
 import lombok.Getter;
@@ -31,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.Style;
@@ -206,20 +205,17 @@ public final class NoteGui extends Gui implements Drawable {
         final StyledDocument document = textPane.getStyledDocument();
 
         // format text
-        for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
-            final TextStyleType styleType = styleEntry.getKey();
+        for (@NotNull final Map.Entry<Integer, List<TextStyleType>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
+            final int position = styleEntry.getKey();
+            final List<TextStyleType> textStyles = styleEntry.getValue();
 
-            for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
-                for (int i = styleInformation.getStartPosition(); i < styleInformation.getEndPosition(); i++) {
-                    final Style tempStyle = document.getStyle("" + i);
-                    final Style style = tempStyle == null ? document.addStyle("" + i, null) : tempStyle;
-                    styleType.expandStyle(style);
+            final Style style = document.addStyle("" + position, null);
 
-                    final String currentChar = document.getText(i, 1);
-                    document.remove(i, 1);
-                    document.insertString(i, currentChar, style);
-                }
+            for (@NotNull final TextStyleType textStyle : textStyles) {
+                textStyle.expandStyle(style);
             }
+
+            document.setCharacterAttributes(position, 1, style.copyAttributes(), true);
         }
 
         if (note.getLines().isEmpty()) textPane.setText("");
@@ -230,19 +226,9 @@ public final class NoteGui extends Gui implements Drawable {
         for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
             toggleButton.setText(styleType.getText());
-            final TextStyleInteractListener textStyleInteractListener = new TextStyleInteractListener(
-                this,
-                styleType,
-                toggleButton
-            );
-            toggleButton.addActionListener(textStyleInteractListener);
 
             // select default font size
-            if (styleType == TextStyleType.H5) {
-                toggleButton.setSelected(true);
-                textStyleInteractListener.interactAction();
-                toggleButton.setSelected(true);
-            }
+            if (styleType == TextStyleType.H5) toggleButton.setSelected(true);
 
             styleButtons.add(toggleButton);
             styleToolbar.add(toggleButton);
@@ -310,11 +296,21 @@ public final class NoteGui extends Gui implements Drawable {
                 note.getParentNotebook()
             );
 
-            // imitate button unselect
-            for (@NotNull final RoundToggleButton styleButton : styleButtons) {
-                if (!styleButton.isSelected()) continue;
-                styleButton.setSelected(false);
-                ((TextStyleInteractListener) styleButton.getActionListeners()[0]).interactAction();
+            final Map<Integer, List<TextStyleType>> styles = newNote.getTextStyleInformation().getStyles();
+
+            // save styles
+            for (int i = 0; i < textPane.getText().length(); i++) {
+                final char currentChar = textPane.getText().charAt(i);
+                final Element element = textPane.getStyledDocument().getCharacterElement(currentChar);
+                final AttributeSet attributes = element.getAttributes();
+
+                for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
+                    if (!styleType.attributesContains(attributes)) continue;
+
+                    if (!styles.containsKey(i)) styles.put(i, new LinkedList<>());
+
+                    styles.get(i).add(styleType);
+                }
             }
 
             final List<Integer> removedImagePositions = new ArrayList<>();
@@ -335,7 +331,7 @@ public final class NoteGui extends Gui implements Drawable {
             }
 
             NotesHandler.saveNote(newNote);
-            TextStyleHandler.saveTextStyle(newNote, note.getTextStyleInformation());
+            TextStyleHandler.saveTextStyle(newNote, newNote.getTextStyleInformation());
             NotesHandler.deleteNote(note);
             TextStyleHandler.deleteTextStyle(note);
             overviewGui.reloadButtons();

@@ -3,6 +3,7 @@ package de.jonas.notes.constant;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.text.AttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
@@ -74,5 +75,38 @@ public enum TextStyleType {
                 StyleConstants.setFontSize(style, 16);
                 break;
         }
+    }
+
+    public boolean attributesContains(@NotNull final AttributeSet attributes) {
+        switch (this) {
+            case BOLD:
+                return StyleConstants.isBold(attributes);
+
+            case ITALIC:
+                return StyleConstants.isItalic(attributes);
+
+            case UNDERLINE:
+                return StyleConstants.isUnderline(attributes);
+
+            case H1:
+                return StyleConstants.getFontSize(attributes) == 34;
+
+            case H2:
+                return StyleConstants.getFontSize(attributes) == 30;
+
+            case H3:
+                return StyleConstants.getFontSize(attributes) == 24;
+
+            case H4:
+                return StyleConstants.getFontSize(attributes) == 20;
+
+            case H5:
+                return StyleConstants.getFontSize(attributes) == 18;
+
+            case H6:
+                return StyleConstants.getFontSize(attributes) == 16;
+        }
+
+        return false;
     }
 }

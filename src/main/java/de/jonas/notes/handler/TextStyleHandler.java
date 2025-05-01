@@ -11,7 +11,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public final class TextStyleHandler {
@@ -40,17 +41,19 @@ public final class TextStyleHandler {
 
         try (@NotNull final BufferedWriter writer = new BufferedWriter(new FileWriter(styleFile, false))) {
             // save text format
-            for (@NotNull final Map.Entry<TextStyleType, LinkedList<TextStyleInformation.StyleInformation>> styleEntry : style.getStyles().entrySet()) {
-                final String styleName = styleEntry.getKey().name();
+            for (@NotNull final Map.Entry<Integer, List<TextStyleType>> styleEntry : style.getStyles().entrySet()) {
+                final int position = styleEntry.getKey();
+                final List<TextStyleType> styleTypes = styleEntry.getValue();
 
-                for (@NotNull final TextStyleInformation.StyleInformation styleInformation : styleEntry.getValue()) {
-                    final int startPosition = styleInformation.getStartPosition();
-                    final int endPosition = styleInformation.getEndPosition();
+                final StringBuilder lineBuilder = new StringBuilder();
+                lineBuilder.append(position).append(":");
 
-                    if (startPosition > endPosition || startPosition == endPosition) continue;
-
-                    writer.write(styleName + ":" + startPosition + ":" + endPosition + "\n");
+                for (@NotNull final TextStyleType styleType : styleTypes) {
+                    lineBuilder.append(styleType.name()).append(",");
                 }
+
+                lineBuilder.deleteCharAt(lineBuilder.length() - 1).append("\n");
+                writer.write(lineBuilder.toString());
             }
 
             // save images
@@ -77,34 +80,28 @@ public final class TextStyleHandler {
 
         try {
             for (@NotNull final String line : Files.readAllLines(styleFile.toPath())) {
-                final String[] parts = line.split(":", 3);
+                final String[] parts = line.split(":", 2);
 
                 final TextStyleInformation information = note.getTextStyleInformation();
 
                 // load image
                 if (parts[0].equals("IMAGE")) {
-                    final int position = Integer.parseInt(parts[1]);
-                    final String path = parts[2];
+                    final int position = Integer.parseInt(parts[1].split(":")[0]);
+                    final String path = parts[1].split(":")[1];
 
                     information.getImages().put(position, new File(path));
                     continue;
                 }
 
-                if (parts.length != 3) continue;
+                final int position = Integer.parseInt(parts[0]);
+                final String[] textStyles = parts[1].split(",");
+                final List<TextStyleType> textStyleTypes = new ArrayList<>();
 
-                final TextStyleType styleType = TextStyleType.valueOf(parts[0]);
-                final int startPosition = Integer.parseInt(parts[1]);
-                final int endPosition = Integer.parseInt(parts[2]);
-
-                if (!information.getStyles().containsKey(styleType)) {
-                    information.getStyles().put(styleType, new LinkedList<>());
+                for (@NotNull final String textStyle : textStyles) {
+                    textStyleTypes.add(TextStyleType.valueOf(textStyle));
                 }
 
-                final TextStyleInformation.StyleInformation styleInformation = new TextStyleInformation.StyleInformation();
-                styleInformation.setStartPosition(startPosition);
-                styleInformation.setEndPosition(endPosition);
-
-                information.getStyles().get(styleType).add(styleInformation);
+                information.getStyles().put(position, textStyleTypes);
             }
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);
