@@ -137,11 +137,11 @@ public final class NoteGui extends Gui implements Drawable {
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 new ImageIcon(ImageType.INSERT_IMAGE_ICON.getImage()),
-                new String[]{"Abbrechen", "Einfügen"},
-                "Abbrechen"
+                new String[]{"Einfügen", "Abbrechen"},
+                "Einfügen"
             );
 
-            if (insertImageResult == 0) return;
+            if (insertImageResult == 1) return;
 
             final int width = Integer.parseInt(widthField.getText());
             final int height = Integer.parseInt(heightField.getText());
