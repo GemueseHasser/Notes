@@ -1,5 +1,6 @@
 package de.jonas.notes.object;
 
+import de.jonas.notes.constant.ImageType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -51,6 +52,7 @@ public class Gui extends JFrame {
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setLocationRelativeTo(null);
         super.setLayout(null);
+        super.setIconImage(ImageType.LOGO.getImage());
         super.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(@NotNull final ComponentEvent e) {

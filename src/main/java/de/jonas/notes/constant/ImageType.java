@@ -34,7 +34,8 @@ public enum ImageType {
     INSERT_IMAGE_ICON("insertImage.png", 150, 150),
     NOTEBOOK_ICON("notebook.png", NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE, NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE),
     NOTE_ICON("note.png", NoteOverviewGui.NOTE_BUTTON_SIZE, NoteOverviewGui.NOTE_BUTTON_SIZE),
-    DELETE_NOTEBOOK_ICON("deleteNotebook.png", 70, 70);
+    DELETE_NOTEBOOK_ICON("deleteNotebook.png", 70, 70),
+    LOGO("logo.png", 50, 50);
     //</editor-fold>
 
 
