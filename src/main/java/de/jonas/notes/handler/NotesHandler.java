@@ -74,8 +74,7 @@ public final class NotesHandler {
             writer.newLine();
 
             for (@NotNull final String line : note.getLines()) {
-                writer.write(line);
-                writer.newLine();
+                writer.write(line + "\n");
             }
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);

@@ -205,17 +205,17 @@ public final class NoteGui extends Gui implements Drawable {
         final StyledDocument document = textPane.getStyledDocument();
 
         // format text
-        for (@NotNull final Map.Entry<Integer, List<TextStyleType>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
-            final int position = styleEntry.getKey();
-            final List<TextStyleType> textStyles = styleEntry.getValue();
+        for (@NotNull final Map.Entry<TextStyleType, List<Integer>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
+            final TextStyleType styleType = styleEntry.getKey();
+            final List<Integer> positions = styleEntry.getValue();
 
-            final Style style = document.addStyle("" + position, null);
+            for (final int position : positions) {
+                final Style tempStyle = document.getStyle("" + position);
+                final Style style = tempStyle == null ? document.addStyle("" + position, null) : tempStyle;
 
-            for (@NotNull final TextStyleType textStyle : textStyles) {
-                textStyle.expandStyle(style);
+                styleType.expandStyle(style);
+                document.setCharacterAttributes(position, 1, style.copyAttributes(), true);
             }
-
-            document.setCharacterAttributes(position, 1, style.copyAttributes(), true);
         }
 
         if (note.getLines().isEmpty()) textPane.setText("");
@@ -313,7 +313,7 @@ public final class NoteGui extends Gui implements Drawable {
                 newNote.getTextStyleInformation().getImages().put(imagePosition, imageFile);
             }
 
-            final Map<Integer, List<TextStyleType>> styles = newNote.getTextStyleInformation().getStyles();
+            final Map<TextStyleType, List<Integer>> styles = newNote.getTextStyleInformation().getStyles();
 
             // save styles
             for (int i = 0; i < textPane.getText().length(); i++) {
@@ -322,12 +322,11 @@ public final class NoteGui extends Gui implements Drawable {
                 final Element element = textPane.getStyledDocument().getCharacterElement(i);
                 final AttributeSet attributes = element.getAttributes();
 
-                if (!styles.containsKey(i)) styles.put(i, new ArrayList<>());
-
                 for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
                     if (!styleType.attributesContains(attributes)) continue;
+                    if (!styles.containsKey(styleType)) styles.put(styleType, new ArrayList<>());
 
-                    styles.get(i).add(styleType);
+                    styles.get(styleType).add(i);
                 }
             }
 

@@ -14,7 +14,7 @@ public final class TextStyleInformation {
 
 
     @NotNull
-    private final Map<Integer, List<TextStyleType>> styles = new HashMap<>();
+    private final Map<TextStyleType, List<Integer>> styles = new HashMap<>();
     @NotNull
     private final Map<Integer, File> images = new HashMap<>();
 

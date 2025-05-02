@@ -43,14 +43,14 @@ public final class TextStyleHandler {
             final StringBuilder lineBuilder = new StringBuilder();
 
             // save text format
-            for (@NotNull final Map.Entry<Integer, List<TextStyleType>> styleEntry : style.getStyles().entrySet()) {
-                final int position = styleEntry.getKey();
-                final List<TextStyleType> styleTypes = styleEntry.getValue();
+            for (@NotNull final Map.Entry<TextStyleType, List<Integer>> styleEntry : style.getStyles().entrySet()) {
+                final TextStyleType styleType = styleEntry.getKey();
+                final List<Integer> positions = styleEntry.getValue();
 
-                lineBuilder.append(position).append(":");
+                lineBuilder.append(styleType.name()).append(":");
 
-                for (@NotNull final TextStyleType styleType : styleTypes) {
-                    lineBuilder.append(styleType.name()).append(",");
+                for (final int position : positions) {
+                    lineBuilder.append(position).append(",");
                 }
 
                 lineBuilder.deleteCharAt(lineBuilder.length() - 1).append("\n");
@@ -95,15 +95,15 @@ public final class TextStyleHandler {
                     continue;
                 }
 
-                final int position = Integer.parseInt(parts[0]);
-                final String[] textStyles = parts[1].split(",");
-                final List<TextStyleType> textStyleTypes = new ArrayList<>();
+                final TextStyleType styleType = TextStyleType.valueOf(parts[0]);
+                final String[] positionsText = parts[1].split(",");
+                final List<Integer> positions = new ArrayList<>();
 
-                for (@NotNull final String textStyle : textStyles) {
-                    textStyleTypes.add(TextStyleType.valueOf(textStyle));
+                for (@NotNull final String position : positionsText) {
+                    positions.add(Integer.parseInt(position));
                 }
 
-                information.getStyles().put(position, textStyleTypes);
+                information.getStyles().put(styleType, positions);
             }
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);
