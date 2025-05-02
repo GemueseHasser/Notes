@@ -190,7 +190,9 @@ public final class NoteGui extends Gui implements Drawable {
         });
 
         utilityToolbar.add(insertButton);
+        utilityToolbar.addSeparator(new Dimension(20, 0));
         utilityToolbar.add(fontFamilyChooser);
+        utilityToolbar.addSeparator(new Dimension(10, 0));
 
         titlePanel.add(titleField);
         titlePanel.add(utilityToolbar);
