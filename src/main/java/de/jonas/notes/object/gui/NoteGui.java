@@ -51,7 +51,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -300,14 +299,13 @@ public final class NoteGui extends Gui implements Drawable {
 
             // save styles
             for (int i = 0; i < textPane.getText().length(); i++) {
-                final char currentChar = textPane.getText().charAt(i);
-                final Element element = textPane.getStyledDocument().getCharacterElement(currentChar);
+                final Element element = textPane.getStyledDocument().getCharacterElement(i);
                 final AttributeSet attributes = element.getAttributes();
+
+                if (!styles.containsKey(i)) styles.put(i, new ArrayList<>());
 
                 for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
                     if (!styleType.attributesContains(attributes)) continue;
-
-                    if (!styles.containsKey(i)) styles.put(i, new LinkedList<>());
 
                     styles.get(i).add(styleType);
                 }
