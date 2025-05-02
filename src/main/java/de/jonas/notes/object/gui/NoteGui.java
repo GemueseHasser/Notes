@@ -10,6 +10,7 @@ import de.jonas.notes.handler.NotesHandler;
 import de.jonas.notes.handler.PdfHandler;
 import de.jonas.notes.handler.TextStyleHandler;
 import de.jonas.notes.listener.CursorListener;
+import de.jonas.notes.listener.TextSizeActionListener;
 import de.jonas.notes.object.Drawable;
 import de.jonas.notes.object.Gui;
 import de.jonas.notes.object.Note;
@@ -225,6 +226,10 @@ public final class NoteGui extends Gui implements Drawable {
         for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
             toggleButton.setText(styleType.getText());
+
+            if (styleType.name().matches("^H[1-6]$")) {
+                toggleButton.addActionListener(new TextSizeActionListener(this, toggleButton));
+            }
 
             // select default font size
             if (styleType == TextStyleType.H5) toggleButton.setSelected(true);
