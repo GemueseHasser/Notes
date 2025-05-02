@@ -61,6 +61,9 @@ public final class NotebookHandler {
                 writer.write(infoLine + "\n");
             }
 
+            final File notebookFile = new File("Notes" + File.separator + notebookName);
+            if (!notebookFile.exists()) return;
+
             writer.write(notebookName + ":" + LocalDateTime.now().format(Notes.FORMATTER) + "\n");
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);

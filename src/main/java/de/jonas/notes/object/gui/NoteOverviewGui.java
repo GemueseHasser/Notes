@@ -65,6 +65,7 @@ public final class NoteOverviewGui extends OverviewGui {
 
             final File notebookFile = new File("Notes" + File.separator + notebook.getName());
             if (notebookFile.exists()) FileHandler.deleteDirectory(notebookFile);
+            NotebookHandler.setLastAccessTimestamp(notebook.getName());
             this.dispose();
         });
 
