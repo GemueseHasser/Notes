@@ -2,6 +2,7 @@ package de.jonas.notes.object;
 
 import de.jonas.notes.constant.TextStyleType;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -12,7 +13,9 @@ import java.util.Map;
 @Getter
 public final class TextStyleInformation {
 
-
+    @Setter
+    @NotNull
+    private String fontFamily = "Arial";
     @NotNull
     private final Map<TextStyleType, List<Integer>> styles = new HashMap<>();
     @NotNull

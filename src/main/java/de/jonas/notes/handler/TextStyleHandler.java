@@ -42,6 +42,9 @@ public final class TextStyleHandler {
         try (@NotNull final BufferedWriter writer = new BufferedWriter(new FileWriter(styleFile, false))) {
             final StringBuilder lineBuilder = new StringBuilder();
 
+            // save font family
+            lineBuilder.append("FONT_FAMILY:").append(style.getFontFamily()).append("\n");
+
             // save text format
             for (@NotNull final Map.Entry<TextStyleType, List<Integer>> styleEntry : style.getStyles().entrySet()) {
                 final TextStyleType styleType = styleEntry.getKey();
@@ -85,6 +88,12 @@ public final class TextStyleHandler {
                 final String[] parts = line.split(":", 2);
 
                 final TextStyleInformation information = note.getTextStyleInformation();
+
+                // load font family
+                if (parts[0].equals("FONT_FAMILY")) {
+                    information.setFontFamily(parts[1]);
+                    return;
+                }
 
                 // load image
                 if (parts[0].equals("IMAGE")) {

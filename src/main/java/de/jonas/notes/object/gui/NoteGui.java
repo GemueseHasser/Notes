@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -43,6 +44,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -163,11 +165,6 @@ public final class NoteGui extends Gui implements Drawable {
             textPane.insertIcon(new ImageIcon(image));
         });
 
-        utilityToolbar.add(insertButton);
-
-        titlePanel.add(titleField);
-        titlePanel.add(utilityToolbar);
-
         textPane.setFont(TEXT_FONT);
         textPane.setBorder(null);
         textPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
@@ -180,6 +177,23 @@ public final class NoteGui extends Gui implements Drawable {
                 repaint();
             }
         });
+
+        final JComboBox<String> fontFamilyChooser = new JComboBox<>(
+            GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()
+        );
+        fontFamilyChooser.setSelectedItem(note.getTextStyleInformation().getFontFamily());
+        fontFamilyChooser.addItemListener(e -> {
+            final Style style = textPane.getLogicalStyle();
+            StyleConstants.setFontFamily(style, e.getItem().toString());
+
+            note.getTextStyleInformation().setFontFamily(e.getItem().toString());
+        });
+
+        utilityToolbar.add(insertButton);
+        utilityToolbar.add(fontFamilyChooser);
+
+        titlePanel.add(titleField);
+        titlePanel.add(utilityToolbar);
 
         // load plain text
         for (@NotNull final String line : note.getLines()) {
@@ -203,6 +217,9 @@ public final class NoteGui extends Gui implements Drawable {
         }
 
         final StyledDocument document = textPane.getStyledDocument();
+
+        final Style logicalStyle = textPane.getLogicalStyle();
+        StyleConstants.setFontFamily(logicalStyle, note.getTextStyleInformation().getFontFamily());
 
         // format text
         for (@NotNull final Map.Entry<TextStyleType, List<Integer>> styleEntry : note.getTextStyleInformation().getStyles().entrySet()) {
@@ -299,6 +316,9 @@ public final class NoteGui extends Gui implements Drawable {
                 new ArrayList<>(Arrays.asList(textPane.getText().split("\n"))),
                 note.getParentNotebook()
             );
+
+            // set font family
+            newNote.getTextStyleInformation().setFontFamily(note.getTextStyleInformation().getFontFamily());
 
             // check removed images
             for (@NotNull final Map.Entry<Integer, File> imageEntry : note.getTextStyleInformation().getImages().entrySet()) {
