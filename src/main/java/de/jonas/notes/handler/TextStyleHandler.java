@@ -40,12 +40,13 @@ public final class TextStyleHandler {
         }
 
         try (@NotNull final BufferedWriter writer = new BufferedWriter(new FileWriter(styleFile, false))) {
+            final StringBuilder lineBuilder = new StringBuilder();
+
             // save text format
             for (@NotNull final Map.Entry<Integer, List<TextStyleType>> styleEntry : style.getStyles().entrySet()) {
                 final int position = styleEntry.getKey();
                 final List<TextStyleType> styleTypes = styleEntry.getValue();
 
-                final StringBuilder lineBuilder = new StringBuilder();
                 lineBuilder.append(position).append(":");
 
                 for (@NotNull final TextStyleType styleType : styleTypes) {
@@ -53,7 +54,6 @@ public final class TextStyleHandler {
                 }
 
                 lineBuilder.deleteCharAt(lineBuilder.length() - 1).append("\n");
-                writer.write(lineBuilder.toString());
             }
 
             // save images
@@ -61,8 +61,10 @@ public final class TextStyleHandler {
                 final int startPosition = imageEntry.getKey();
                 final File imageFile = imageEntry.getValue();
 
-                writer.write("IMAGE:" + startPosition + ":" + imageFile.getAbsoluteFile() + "\n");
+                lineBuilder.append("IMAGE:").append(startPosition).append(":").append(imageFile.getAbsoluteFile()).append("\n");
             }
+
+            writer.write(lineBuilder.toString());
         } catch (@NotNull final IOException e) {
             throw new RuntimeException(e);
         }
@@ -86,8 +88,8 @@ public final class TextStyleHandler {
 
                 // load image
                 if (parts[0].equals("IMAGE")) {
-                    final int position = Integer.parseInt(parts[1].split(":")[0]);
-                    final String path = parts[1].split(":")[1];
+                    final int position = Integer.parseInt(parts[1].split(":", 2)[0]);
+                    final String path = parts[1].split(":", 2)[1];
 
                     information.getImages().put(position, new File(path));
                     continue;

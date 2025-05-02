@@ -300,10 +300,25 @@ public final class NoteGui extends Gui implements Drawable {
                 note.getParentNotebook()
             );
 
+            // check removed images
+            for (@NotNull final Map.Entry<Integer, File> imageEntry : note.getTextStyleInformation().getImages().entrySet()) {
+                final int imagePosition = imageEntry.getKey();
+                final File imageFile = imageEntry.getValue();
+
+                final Element element = textPane.getStyledDocument().getCharacterElement(imagePosition);
+                final Icon icon = StyleConstants.getIcon(element.getAttributes());
+
+                if (icon == null) continue;
+
+                newNote.getTextStyleInformation().getImages().put(imagePosition, imageFile);
+            }
+
             final Map<Integer, List<TextStyleType>> styles = newNote.getTextStyleInformation().getStyles();
 
             // save styles
             for (int i = 0; i < textPane.getText().length(); i++) {
+                if (newNote.getTextStyleInformation().getImages().containsKey(i)) continue;
+
                 final Element element = textPane.getStyledDocument().getCharacterElement(i);
                 final AttributeSet attributes = element.getAttributes();
 
@@ -314,23 +329,6 @@ public final class NoteGui extends Gui implements Drawable {
 
                     styles.get(i).add(styleType);
                 }
-            }
-
-            final List<Integer> removedImagePositions = new ArrayList<>();
-
-            // check removed images
-            for (final int imagePosition : note.getTextStyleInformation().getImages().keySet()) {
-                final Element element = textPane.getStyledDocument().getCharacterElement(imagePosition);
-                final Icon icon = StyleConstants.getIcon(element.getAttributes());
-
-                if (icon == null) {
-                    removedImagePositions.add(imagePosition);
-                }
-            }
-
-            // remove removed images
-            for (final int imagePosition : removedImagePositions) {
-                note.getTextStyleInformation().getImages().remove(imagePosition);
             }
 
             NotesHandler.saveNote(newNote);
