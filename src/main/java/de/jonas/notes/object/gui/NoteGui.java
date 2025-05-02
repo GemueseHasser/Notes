@@ -61,8 +61,6 @@ public final class NoteGui extends Gui implements Drawable {
 
     @NotNull
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 22);
-    @NotNull
-    private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final int WIDTH = 700;
     private static final int HEIGHT = 550;
 
@@ -165,7 +163,7 @@ public final class NoteGui extends Gui implements Drawable {
             textPane.insertIcon(new ImageIcon(image));
         });
 
-        textPane.setFont(TEXT_FONT);
+        textPane.setFont(new Font(note.getTextStyleInformation().getFontFamily(), Font.PLAIN, 18));
         textPane.setBorder(null);
         textPane.setPreferredSize(new Dimension(WIDTH, HEIGHT - 50));
         textPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -396,7 +394,7 @@ public final class NoteGui extends Gui implements Drawable {
     public void draw(@NotNull final Graphics2D g) {
         if (!textPane.getText().trim().isEmpty()) return;
 
-        g.setFont(TEXT_FONT);
+        g.setFont(new Font(note.getTextStyleInformation().getFontFamily(), Font.PLAIN, 18));
         g.drawString(
             "Notizen hinzufügen...",
             scrollTextPane.getX() + 10,
