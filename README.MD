@@ -10,7 +10,9 @@ an der sich der Cursor befindet, einzufügen.\
 Den Text kann man **fett**, *kursiv* oder <ins>unterstrichen</ins> darstellen und kann bei der Schriftgröße von h1-h6
 wählen.\
 Wenn Bilder eingefügt werden, kann man die Größe dieser Bilder selbst bestimmen. Das Bild wird dann auf die entsprechende
-Größe zugeschnitten, eingefügt und als Kopie im Resources-Ordner des Notizbuchs gespeichert.
+Größe zugeschnitten, eingefügt und als Kopie im Resources-Ordner des Notizbuchs gespeichert.\
+\
+[Notizen-App herunterladen](Notes.jar)
 
 ## Eingebundene Bibliotheken
 > ### Lombok 
