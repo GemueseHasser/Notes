@@ -115,7 +115,7 @@ public final class TextStyleHandler {
                 // load font family
                 if (parts[0].equals("FONT_FAMILY")) {
                     information.setFontFamily(parts[1]);
-                    return;
+                    continue;
                 }
 
                 // load image
