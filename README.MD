@@ -12,7 +12,7 @@ wählen.\
 Wenn Bilder eingefügt werden, kann man die Größe dieser Bilder selbst bestimmen. Das Bild wird dann auf die entsprechende
 Größe zugeschnitten, eingefügt und als Kopie im Resources-Ordner des Notizbuchs gespeichert.\
 \
-[Notizen-App herunterladen](Notes.jar)
+[Notizen-App herunterladen](https://github.com/GemueseHasser/Notes/raw/refs/heads/master/Notes.jar)
 
 ## Eingebundene Bibliotheken
 > ### Lombok 
