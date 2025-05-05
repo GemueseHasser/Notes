@@ -34,15 +34,19 @@ public final class PdfHandler {
         @NotNull final BufferedImage image,
         @NotNull final File outputFile
     ) {
+        // create pdf writer
         try (final PdfWriter pdfWriter = new PdfWriter(outputFile)) {
+            // create new pdf document
             final PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             final Document document = new Document(pdfDocument, PageSize.A4);
 
             final int pageWidth = (int) PageSize.A4.getWidth();
             final int pageHeight = (int) (PageSize.A4.getHeight() - document.getTopMargin() - document.getBottomMargin());
 
+            // calculate page amount
             final int pageAmount = image.getHeight() / pageHeight + 1;
 
+            // render image on pages
             for (int i = 0; i < pageAmount; i++) {
                 final int remainingHeight = image.getHeight() - (i * pageHeight);
                 final int currentImageHeight = Math.min(remainingHeight, pageHeight);
@@ -52,6 +56,8 @@ public final class PdfHandler {
                     pageWidth,
                     currentImageHeight
                 );
+
+                // create pdf compatible image
                 final ImageData imageData = ImageDataFactory.create(currentPageImage, Color.WHITE);
                 final Image pdfImage = new Image(imageData);
 
@@ -60,6 +66,7 @@ public final class PdfHandler {
                 if (i < pageAmount - 1) document.add(new AreaBreak());
             }
 
+            // close document
             document.close();
         } catch (@NotNull final IOException ex) {
             throw new RuntimeException(ex);

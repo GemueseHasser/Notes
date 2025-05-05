@@ -33,12 +33,14 @@ public final class FileHandler {
         @NotNull final String approveText,
         @NotNull final String @NotNull [] extensions
     ) {
+        // create file chooser
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle(title);
         fileChooser.setAcceptAllFileFilterUsed(false);
 
+        // load enabled file extensions
         final StringBuilder extensionTextBuilder = new StringBuilder();
         for (@NotNull final String extension : extensions) {
             extensionTextBuilder.append("*.").append(extension);
@@ -49,13 +51,16 @@ public final class FileHandler {
 
         final int result = fileChooser.showDialog(null, approveText);
 
+        // check if user selects a file
         if (result == JFileChooser.APPROVE_OPTION) {
             final File selectedFile = fileChooser.getSelectedFile();
 
+            // check if extension is preset
             for (@NotNull final String extension : extensions) {
                 if (selectedFile.getName().endsWith(extension)) return selectedFile;
             }
 
+            // append standard extension
             return new File(selectedFile + "." + extensions[0]);
         }
 

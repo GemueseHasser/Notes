@@ -68,9 +68,12 @@ public enum ImageType {
         @Range(from = 0, to = Integer.MAX_VALUE) final int height
     ) {
         try {
+            // load image
             final BufferedImage tempImage = ImageIO.read(
                 Objects.requireNonNull(getClass().getResource("/" + imageName))
             );
+
+            // create new image to render width and height
             image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             final Graphics2D g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

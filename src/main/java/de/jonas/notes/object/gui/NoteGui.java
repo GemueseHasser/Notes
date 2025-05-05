@@ -114,6 +114,8 @@ public final class NoteGui extends Gui implements Drawable {
         @NotNull final Note note
     ) {
         super(note.getTitle(), WIDTH, HEIGHT);
+
+        // set gui properties
         this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout(5, 5));
@@ -123,6 +125,7 @@ public final class NoteGui extends Gui implements Drawable {
 
         final JPanel titlePanel = new JPanel(new GridLayout(2, 1));
 
+        // create title text field
         final JTextField titleField = new JTextField(note.getTitle());
         titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setFont(TITLE_FONT);
@@ -130,10 +133,12 @@ public final class NoteGui extends Gui implements Drawable {
         titleField.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         titleField.addMouseListener(new CursorListener(this));
 
+        // create utility toolbar
         final JToolBar utilityToolbar = new JToolBar();
         utilityToolbar.addSeparator(new Dimension(30, 0));
         utilityToolbar.setFloatable(false);
 
+        // create button to insert images -> utility toolbar
         final RoundButton insertButton = new RoundButton("Bild einfügen", 10, this);
         insertButton.addActionListener(e -> {
             final File rawImageFile = FileHandler.getFile(
@@ -205,6 +210,7 @@ public final class NoteGui extends Gui implements Drawable {
             }
         });
 
+        // create font family chooser based on system fonts -> utility toolbar
         final JComboBox<String> fontFamilyChooser = new JComboBox<>(
             GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()
         );
@@ -269,6 +275,7 @@ public final class NoteGui extends Gui implements Drawable {
         final JToolBar styleToolbar = new JToolBar(JToolBar.VERTICAL);
         styleToolbar.setFloatable(false);
 
+        // append style buttons to style toolbar
         for (@NotNull final TextStyleType styleType : TextStyleType.values()) {
             final RoundToggleButton toggleButton = new RoundToggleButton(styleType.getStyledTextAction(), 10, this);
             toggleButton.setText(styleType.getText());
