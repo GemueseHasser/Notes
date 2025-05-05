@@ -17,7 +17,7 @@ import java.util.Objects;
 
 /**
  * Ein {@link ImageType Typ} wird für jedes Bild erzeugt, welches genau einmal geladen werden soll. Dieser Typ wird auf
- * der Grundlage des Namens des Bildes erzeugt, womit ein {@link BufferedImage} mit einer bestimmten Größe generiert
+ * der Grundlage des Namens des Bildes erzeugt, womit ein {@link BufferedImage Bild} in einer bestimmten Größe generiert
  * wird.
  */
 @Getter
@@ -32,9 +32,13 @@ public enum ImageType {
     DELETE_ICON("deleteNote.png", 150, 150),
     /** Der Typ des Bildes, welches im Option-Pane angezeigt wird, wenn man ein Bild einfügen möchte. */
     INSERT_IMAGE_ICON("insertImage.png", 150, 150),
+    /** Der Typ des Bildes, welches als Icon eines Notizbuchs angezeigt wird. */
     NOTEBOOK_ICON("notebook.png", NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE, NotebookOverviewGui.NOTEBOOK_BUTTON_SIZE),
+    /** Der Typ des Bildes, welches als Icon einer Notiz in einem Notizbuch angezeigt wird. */
     NOTE_ICON("note.png", NoteOverviewGui.NOTE_BUTTON_SIZE, NoteOverviewGui.NOTE_BUTTON_SIZE),
+    /** Der Typ des Bildes, welches auf dem Button angezeigt wird, mit welchem man ein ganzes Notizbuch löschen kann. */
     DELETE_NOTEBOOK_ICON("deleteNotebook.png", 70, 70),
+    /** Der Typ des Bildes, welches das Logo dieser Anwendung darstellt. */
     LOGO("logo.png", 50, 50);
     //</editor-fold>
 

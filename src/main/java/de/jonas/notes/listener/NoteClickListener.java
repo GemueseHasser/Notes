@@ -6,26 +6,29 @@ import de.jonas.notes.object.gui.OverviewGui;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.BadLocationException;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Durch diesen Listener wird die Aktion implementiert, die ausgeführt wird, sobald der Nutzer auf eine Notiz klickt.
+ */
 @RequiredArgsConstructor
 public final class NoteClickListener implements ActionListener {
 
+    //<editor-fold desc="LOCAL FIELDS">
+    /** Die Notiz, die angeklickt wurde. */
     @NotNull
     private final Note note;
+    /** Das Fenster, in dem sich dei Notiz befindet, die angeklickt wurde. */
     @NotNull
     private final OverviewGui overviewGui;
+    //</editor-fold>
 
 
+    //<editor-fold desc="implementation">
     @Override
     public void actionPerformed(@NotNull final ActionEvent e) {
-        try {
-            new NoteGui(overviewGui, note).open();
-        } catch (BadLocationException ex) {
-            throw new RuntimeException(ex);
-        }
+        new NoteGui(overviewGui, note).open();
     }
+    //</editor-fold>
 }

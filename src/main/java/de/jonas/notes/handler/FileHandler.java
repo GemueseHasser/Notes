@@ -62,6 +62,12 @@ public final class FileHandler {
         return null;
     }
 
+    /**
+     * Löscht einen ganzen Ordner mitsamt aller Dateien, die sich in diesem Ordner befinden.
+     *
+     * @param file Der Ordner, der gelöscht werden soll. Wenn dieser Ordner eine Datei ist, wird einfach nur die Datei
+     *             gelöscht.
+     */
     public static void deleteDirectory(@NotNull final File file) {
         if (file.isDirectory()) {
             for (@NotNull final File subFile : file.listFiles()) {

@@ -15,8 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Mithilfe dieses Handlers lassen sich die Text-Formatierungen einer Notiz losgelöst von der Notiz - mit demselben
+ * Datenamen wie die Notiz - selber als 'notestyle'-Datei abspeichern, laden und löschen.
+ */
 public final class TextStyleHandler {
 
+    //<editor-fold desc="utility">
+
+    /**
+     * Löscht eine Text-Style-Datei einer bestimmten Notiz.
+     *
+     * @param note Die Notiz, dessen Text-Style-Datei gelöscht werden soll.
+     */
     public static void deleteTextStyle(@NotNull final Note note) {
         final File styleFile = new File(
             FileType.STYLE.getFile(note.getParentNotebook()) + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
@@ -26,6 +37,12 @@ public final class TextStyleHandler {
         styleFile.delete();
     }
 
+    /**
+     * Speichert alle Formatierungen einer Notiz in dessen Text-Style-Datei ab.
+     *
+     * @param note  Die Notiz, dessen Formatierungen abgespeichert werden sollen.
+     * @param style Die Informationen der Formatierungen, die diese Notiz beinhaltet.
+     */
     public static void saveTextStyle(
         @NotNull final Note note,
         @NotNull final TextStyleInformation style
@@ -64,7 +81,8 @@ public final class TextStyleHandler {
                 final int startPosition = imageEntry.getKey();
                 final File imageFile = imageEntry.getValue();
 
-                lineBuilder.append("IMAGE:").append(startPosition).append(":").append(imageFile.getAbsoluteFile()).append("\n");
+                lineBuilder.append("IMAGE:").append(startPosition).append(":").append(imageFile.getAbsoluteFile()).append(
+                    "\n");
             }
 
             writer.write(lineBuilder.toString());
@@ -73,6 +91,11 @@ public final class TextStyleHandler {
         }
     }
 
+    /**
+     * Lädt die {@link TextStyleInformation Formatierungen} einer bestimmten Notiz.
+     *
+     * @param note Die Notiz, dessen {@link TextStyleInformation Formatierungen} geladen werden sollen.
+     */
     public static void loadTextStyle(@NotNull final Note note) {
         final File styleFile = new File(
             FileType.STYLE.getFile(note.getParentNotebook()) + File.separator + NotesHandler.getDateTimeText(note.getDateTime()) + ".notestyle"
@@ -118,5 +141,6 @@ public final class TextStyleHandler {
             throw new RuntimeException(e);
         }
     }
+    //</editor-fold>
 
 }

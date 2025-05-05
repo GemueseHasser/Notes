@@ -15,8 +15,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Mithilfe dieses Handlers lässt sich ein Bild als PDF-Datei abspeichern. Dazu wird die IText-Core Bibliothek
+ * verwendet.
+ */
 public final class PdfHandler {
 
+    //<editor-fold desc="utility">
+
+    /**
+     * Speichert ein Bild als PDF-Datei ab. Dazu wird die IText-Core Bibliothek verwendet. Sollte das Bild höher sein
+     * als eine DIN-A4 Seite, wird dieses Bild in mehrere Bilder unterteilt, die auf die Seiten passen.
+     *
+     * @param image      Das Bild, welches in dem PDF-Dokument dargestellt wird.
+     * @param outputFile Die Datei, in der dieses PDF-Dokument gespeichert werden soll.
+     */
     public static void saveImageAsPdf(
         @NotNull final BufferedImage image,
         @NotNull final File outputFile
@@ -52,5 +65,6 @@ public final class PdfHandler {
             throw new RuntimeException(ex);
         }
     }
+    //</editor-fold>
 
 }

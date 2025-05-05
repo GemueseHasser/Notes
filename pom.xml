@@ -26,10 +26,6 @@
             <url>https://mvnrepository.com/artifact/org.jetbrains/annotations</url>
         </repository>
         <repository>
-            <id>JUnit</id>
-            <url>https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api</url>
-        </repository>
-        <repository>
             <id>IText-Core</id>
             <url>https://mvnrepository.com/artifact/com.itextpdf/itext-core</url>
         </repository>
@@ -46,12 +42,6 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.13.0-M2</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>

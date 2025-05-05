@@ -14,8 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Mithilfe dieses Handlers lassen sich die Notizbücher verwalten. Dabei kann man alle Notizbücher laden oder den
+ * Zeitpunkt setzen, zu dem ein Notizbuch zuletzt bearbeitet wurde.
+ */
 public final class NotebookHandler {
 
+    //<editor-fold desc="utility">
+
+    /**
+     * Lädt alle Notizbücher, die existieren.
+     *
+     * @return Alle geladenen Notizbücher.
+     */
     @NotNull
     public static List<Notebook> loadNotebooks() {
         final List<Notebook> notebooks = new ArrayList<>();
@@ -45,6 +56,13 @@ public final class NotebookHandler {
             ).collect(Collectors.toList());
     }
 
+    /**
+     * Aktualisiert den Zeitpunkt, zu dem ein Notizbuch zuletzt bearbeitet wurde. Der Zeitpunkt wird immer auf den
+     * aktuellen Zeitpunkt gesetzt. Wenn ein Notizbuch nicht existiert, macht die Methode nichts und wenn ein Notizbuch
+     * zuvor gelöscht wurde, wird der letzte Zeitpunkt, zu dem auf dieses Notizbuch zugegriffen wurde, gelöscht.
+     *
+     * @param notebookName Der Name des Notizbuchs, dessen Zeitpunkt des letzten Zugriffs aktualisiert werden soll.
+     */
     public static void setLastAccessTimestamp(@NotNull final String notebookName) {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Notes.INFO_FILE, true))) {
             // save lines
@@ -69,5 +87,6 @@ public final class NotebookHandler {
             throw new RuntimeException(e);
         }
     }
+    //</editor-fold>
 
 }

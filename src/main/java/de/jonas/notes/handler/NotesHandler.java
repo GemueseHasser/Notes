@@ -18,12 +18,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Mithilfe dieses Handlers lassen sich alle Notizen, die sich in einem bestimmten Notizbuch befinden verwalten. Dabei
+ * kann man alle Notizen eines Notizbuchs laden, kann eine bestimmte Notiz abspeichern, aber auch löschen.
+ * <p>Gleichzeitig stellt dieser Handler eine Formatierungshilfe für eine {@link LocalDateTime Zeitangabe} zur
+ * verfügung. Dabei kann man sich einen bestimmten Zeitpunkt als formatierten Text zurückgeben lassen, aber auch aus
+ * einem formatierten Text einen Zeitpunkt.</p>
+ */
 public final class NotesHandler {
 
+    //<editor-fold desc="CONSTANTS">
+    /** Die Definition der Formatierung, nach der alle Zeitpunkte formatiert werden. */
     @NotNull
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy'T'HH-mm-ss");
+    //</editor-fold>
 
 
+    //<editor-fold desc="utility">
+
+    /**
+     * Gibt eine Liste aller Notizen zurück, die sich in einem bestimmten Notizbuch befinden. Dabei werden die Notizen
+     * nach den Zeitpunkten sortiert, zu denen sie zuletzt bearbeitet wurden.
+     *
+     * @param notebook Das Notizbuch, dessen Notizen geladen werden sollen.
+     *
+     * @return Eine Liste aller Notizen eines bestimmten Notizbuchs.
+     */
     @NotNull
     public static List<Note> getNotes(@NotNull final Notebook notebook) {
         final List<Note> notes = new ArrayList<>();
@@ -50,6 +70,14 @@ public final class NotesHandler {
             ).collect(Collectors.toList());
     }
 
+    /**
+     * Löscht eine bestimmte Notiz aus seinem Notizbuch.
+     *
+     * @param note Die Notiz, die aus seinem Notizbuch gelöscht werden soll.
+     *
+     * @return Wenn die Notiz erfolgreich gelöscht wurde, oder gar nicht mehr existierte {@code true}, ansonsten
+     *     {@code false}.
+     */
     public static boolean deleteNote(@NotNull final Note note) {
         final File noteFile = getNoteFile(note.getParentNotebook(), note.getDateTime());
         if (!noteFile.exists()) return true;
@@ -57,6 +85,11 @@ public final class NotesHandler {
         return noteFile.delete();
     }
 
+    /**
+     * Speichert eine bestimmte Notiz in seinem Notizbuch ab.
+     *
+     * @param note Die Notiz, die abgespeichert werden soll.
+     */
     public static void saveNote(@NotNull final Note note) {
         final File noteFile = new File(
             FileType.RAW.getFile(note.getParentNotebook()) + File.separator + getDateTimeText(note.getDateTime()) + ".txt"
@@ -81,16 +114,37 @@ public final class NotesHandler {
         }
     }
 
+    /**
+     * Gibt einen bestimmten {@link LocalDateTime Zeitpunkt} als formatierten Text zurück.
+     *
+     * @param dateTime Der Zeitpunkt, der formatiert zurückgegeben werden soll.
+     *
+     * @return Ein bestimmter Zeitpunkt als formatierten Text.
+     */
     @NotNull
     public static String getDateTimeText(@NotNull final LocalDateTime dateTime) {
         return dateTime.format(FORMATTER);
     }
 
+    /**
+     * Erzeugt einen {@link LocalDateTime Zeitpunkt} aus einem formatierten Text.
+     *
+     * @param dateTime Der formatierte Text eines Zeitpunkts.
+     *
+     * @return Ein Zeitpunkt, aus einem formatierten Text eines Zeitpunkts.
+     */
     @NotNull
     public static LocalDateTime getDateTime(@NotNull final String dateTime) {
         return LocalDateTime.parse(dateTime, FORMATTER);
     }
 
+    /**
+     * Gibt eine Liste von Dateien zurück, die die Notizen eines bestimmten Notizbuchs enthalten.
+     *
+     * @param notebook Das Notizbuch, dessen Dateien geladen und zurückgegeben werden, die die Notizen beinhalten.
+     *
+     * @return Eine Liste von Dateien, die die Notizen eines bestimmten Notizbuchs enthalten.
+     */
     @NotNull
     private static List<File> getNoteFiles(@NotNull final Notebook notebook) {
         final List<File> notes = new ArrayList<>();
@@ -113,6 +167,17 @@ public final class NotesHandler {
         return notes;
     }
 
+    /**
+     * Gibt eine Datei aus einem Notizbuch zurück, die zu einem bestimmten Zeitpunkt zuletzt bearbeitet (oder erzeugt)
+     * wurde.
+     *
+     * @param notebook Das Notizbuch, in welchem die Datei gesucht werden soll, welche zu einem bestimmten Zeitpunkt
+     *                 zuletzt bearbeitet wurde.
+     * @param dateTime Der Zeitpunkt, zu dem diese Datei zuletzt bearbeitet wurde.
+     *
+     * @return Eine Datei aus einem Notizbuch, die zu einem bestimmten Zeitpunkt zuletzt bearbeitet (oder erzeugt)
+     *     wurde.
+     */
     @Nullable
     private static File getNoteFile(
         @NotNull final Notebook notebook,
@@ -123,5 +188,6 @@ public final class NotesHandler {
         if (noteFile.exists()) return noteFile;
         return null;
     }
+    //</editor-fold>
 
 }

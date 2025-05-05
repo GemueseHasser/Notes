@@ -57,33 +57,62 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Ein {@link NoteGui} stellt eine Instanz eines {@link Gui Fensters} dar und bietet dem Benutzer eine grafische
+ * Oberfläche, um sich eine Notiz anzeigen zu lassen, diese Notiz zu bearbeiten, abzuspeichern, zu löschen oder als
+ * PDF-Dokument zu exportieren.
+ */
 public final class NoteGui extends Gui implements Drawable {
 
+    //<editor-fold desc="CONSTANTS">
+    /** Die Schriftart, in der der Titel der Notiz angezeigt wird. */
     @NotNull
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 22);
+    /** Die Breite dieses Fensters. */
     private static final int WIDTH = 700;
+    /** Die Höhe dieses Fensters. */
     private static final int HEIGHT = 550;
+    //</editor-fold>
 
 
+    //<editor-fold desc="LOCAL FIELDS">
+    /** Alle Buttons, mit denen der Benutzer Textformatierungen einstellen kann. */
     @Getter
     @NotNull
     private final List<RoundToggleButton> styleButtons = new ArrayList<>();
+    /** Das {@link JTextPane}, in welchem der eigentliche Text der Notiz angezeigt und bearbeitet werden kann. */
     @Getter
     @NotNull
     private final JTextPane textPane = new JTextPane();
+    /** Das {@link JScrollPane}, in welches das Text-Pane der Notiz eingebettet ist. */
     @NotNull
     private final JScrollPane scrollTextPane = new JScrollPane(textPane);
+    /** Die Notiz, die angezeigt wird und auf dessen Grundlage dieses ganze Fenster instanziiert wird. */
     @Getter
     @NotNull
     private final Note note;
+    /** Das Fenster, in dem eine Übersicht aller Notizen angezeigt wurde und von dem aus diese Notiz geöffnet wurde. */
     @NotNull
     private final OverviewGui overviewGui;
+    //</editor-fold>
 
 
+    //<editor-fold desc="CONSTRUCTORS">
+
+    /**
+     * Erzeugt eine neue Instanz eines {@link NoteGui}. Ein {@link NoteGui} stellt eine Instanz eines
+     * {@link Gui Fensters} dar und bietet dem Benutzer eine grafische Oberfläche, um sich eine Notiz anzeigen zu
+     * lassen, diese Notiz zu bearbeiten, abzuspeichern, zu löschen oder als PDF-Dokument zu exportieren.
+     *
+     * @param overviewGui Das Fenster, in dem eine Übersicht aller Notizen angezeigt wurde und von dem aus diese Notiz
+     *                    geöffnet wurde.
+     * @param note        Die Notiz, die angezeigt wird und auf dessen Grundlage dieses ganze Fenster instanziiert
+     *                    wird.
+     */
     public NoteGui(
         @NotNull final OverviewGui overviewGui,
         @NotNull final Note note
-    ) throws BadLocationException {
+    ) {
         super(note.getTitle(), WIDTH, HEIGHT);
         this.addDrawable(this);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -212,7 +241,7 @@ public final class NoteGui extends Gui implements Drawable {
                 textPane.setText(before);
                 textPane.insertIcon(new ImageIcon(image));
                 textPane.getDocument().insertString(position + 1, after, null);
-            } catch (@NotNull final IOException ignored) {
+            } catch (@NotNull final IOException | BadLocationException ignored) {
             }
         }
 
@@ -264,7 +293,19 @@ public final class NoteGui extends Gui implements Drawable {
         this.add(styleToolbar, BorderLayout.WEST);
         this.pack();
     }
+    //</editor-fold>
 
+
+    /**
+     * Gibt ein Panel zurück, in welchem sich alle Optionen befinden, die der Nutzer auf diese Notiz anwenden kann.
+     * Darunter befinden sich die Optionen diese Notiz abzuspeichern, sie zu löschen oder sie als PDF-Dokument zu
+     * exportieren.
+     *
+     * @param titleField Das Textfeld, welches den Titel dieser Notiz beinhaltet, der (falls er geändert wurde), beim
+     *                   Abspeichern berücksichtigt werden muss.
+     *
+     * @return Ein Panel, welches alle Optionen beinhaltet, die der Nutzer auf diese Notiz anwenden kann.
+     */
     @NotNull
     private JPanel getNoteOptionPanel(@NotNull final JTextField titleField) {
         final JPanel noteOptionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
@@ -278,6 +319,11 @@ public final class NoteGui extends Gui implements Drawable {
         return noteOptionPanel;
     }
 
+    /**
+     * Erzeugt einen neuen Button, mit dem der Benutzer diese Notiz als PDF-Dokument exportieren kann.
+     *
+     * @return Ein neuer Button, mit dem der Benutzer diese Notiz als PDF-Dokument exportieren kann.
+     */
     @NotNull
     private RoundButton getExportButton() {
         final RoundButton exportButton = new RoundButton("Exportieren", 10, this);
@@ -306,6 +352,14 @@ public final class NoteGui extends Gui implements Drawable {
         return exportButton;
     }
 
+    /**
+     * Erzeugt einen neuen Button, mit dem der Benutzer diese Notiz abspeichern kann.
+     *
+     * @param titleField Das Textfeld, welches den Titel dieser Notiz beinhaltet, der (falls er geändert wurde), beim
+     *                   Abspeichern berücksichtigt werden muss.
+     *
+     * @return Ein neuer Button, mit dem der Benutzer diese Notiz abspeichern kann.
+     */
     @NotNull
     private RoundButton getSaveButton(@NotNull final JTextField titleField) {
         final RoundButton saveButton = new RoundButton("Speichern", 10, this);
@@ -363,6 +417,11 @@ public final class NoteGui extends Gui implements Drawable {
         return saveButton;
     }
 
+    /**
+     * Erzeugt einen neuen Button, mit dem der Benutzer diese Notiz löschen kann.
+     *
+     * @return Ein neuer Button, mit dem der Benutzer diese Notiz löschen kann.
+     */
     @NotNull
     private RoundButton getDeleteButton() {
         final RoundButton deleteButton = new RoundButton("Löschen", 10, this);

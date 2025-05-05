@@ -63,6 +63,15 @@ public final class RoundButton extends JButton {
         super.addMouseListener(new CursorListener(parent));
     }
 
+    /**
+     * Erzeugt eine neue Instanz eines {@link RoundButton}. Ein {@link RoundButton} stellt eine Instanz eines
+     * {@link JButton Buttons} dar, mit dem Unterschied, dass dieser Button abgerundete Ecken hat bzw. dass die Ecken
+     * auch so abgerundet sein können, dass der Button rund ist.
+     *
+     * @param image    Das Bild, welches auf dem Button angezeigt werden soll.
+     * @param rounding Die Größe der Rundungen der Ecken des Buttons.
+     * @param parent   Das {@link Gui Fenster}, in dem sich dieser Button befindet.
+     */
     public RoundButton(
         @NotNull final BufferedImage image,
         @Range(from = 0, to = Integer.MAX_VALUE) final int rounding,
