@@ -19,10 +19,10 @@ import java.util.Map;
 public final class TextStyleInformation {
 
     //<editor-fold desc="LOCAL FIELDS">
-    /** Die Schriftart, in der diese Notiz verfasst wurde. */
+    /** Die Schriftart, in der diese Notiz verfasst wurde - Standard 'Monospaced'. */
     @Setter
     @NotNull
-    private String fontFamily = "Arial";
+    private String fontFamily = "Monospaced";
     /** Alle individuellen Formatierungen, die durch den Benutzer vorgenommen wurden. */
     @NotNull
     private final Map<TextStyleType, List<Integer>> styles = new HashMap<>();
