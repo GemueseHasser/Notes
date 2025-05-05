@@ -176,8 +176,15 @@ public final class NoteGui extends Gui implements Drawable {
 
             if (insertImageResult == 1) return;
 
-            final int width = Integer.parseInt(widthField.getText());
-            final int height = Integer.parseInt(heightField.getText());
+            final int width;
+            final int height;
+            try {
+                width = Integer.parseInt(widthField.getText());
+                height = Integer.parseInt(heightField.getText());
+            } catch (@NotNull final NumberFormatException ignored) {
+                JOptionPane.showMessageDialog(null, "Fehlerhafte Größe.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             final Graphics2D graphics = image.createGraphics();
             graphics.drawImage(rawImage, 0, 0, width, height, null);
